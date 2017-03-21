@@ -1,9 +1,8 @@
 package pl.olszak.michal.detector;
 
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
+import org.springframework.shell.Bootstrap;
+
+import java.io.IOException;
 
 /**
  * @author molszak
@@ -11,15 +10,8 @@ import org.opencv.core.Scalar;
  */
 public class Main {
 
-    static {
-        nu.pattern.OpenCV.loadShared();
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(Core.VERSION);
-        Mat mat = new Mat(5, 10, CvType.CV_8UC1, new Scalar(0));
-        System.out.println(mat);
+    public static void main(String[] args) throws IOException {
+        Bootstrap.main(args);
     }
 
 }

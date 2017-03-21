@@ -1,3 +1,7 @@
+plugins {
+    id "io.spring.dependency-management" version "1.0.1.RELEASE"
+}
+
 group 'pl.olszak.michal'
 version '0.1'
 
@@ -10,9 +14,24 @@ repositories {
     maven { url "http://repo.springsource.org/lib-release" }
 }
 
+dependencyManagement {
+    imports {
+        mavenBom 'org.apache.logging.log4j:log4j-bom:2.8.1'
+    }
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
-    compile "org.springframework.shell:spring-shell:1.2.0.RELEASE"
+    compile('org.springframework.shell:spring-shell:1.2.0.RELEASE') {
+        exclude group: 'commons-logging'
+    }
     compile "org.openpnp:opencv:3.2.0-0"
+    compile 'com.google.code.gson:gson:2.8.0'
 
+    compile "org.slf4j:slf4j-api:1.7.25"
+    compile "org.slf4j:slf4j-log4j12:1.7.25"
+    compile "org.slf4j:jcl-over-slf4j:1.7.25"
+
+    compile 'org.apache.logging.log4j:log4j-api'
+    compile 'org.apache.logging.log4j:log4j-core'
 }
