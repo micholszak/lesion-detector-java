@@ -18,9 +18,14 @@ public class Banner extends DefaultBannerProvider {
     public String getBanner() {
         String banner = "Lesion Detector Application" + OsUtils.LINE_SEPARATOR +
                 "Masters Degree graduate project" + OsUtils.LINE_SEPARATOR +
-                "Author Michał Olszak" + OsUtils.LINE_SEPARATOR +
+                "Author Michal Olszak" + OsUtils.LINE_SEPARATOR +
                 "Version: " + getVersion();
         return banner;
+    }
+
+    @Override
+    public String getWelcomeMessage() {
+        return "Hello, this application will probably change to sprint fxml integration but not in this stage";
     }
 
     @Override
@@ -30,11 +35,6 @@ public class Banner extends DefaultBannerProvider {
 
     @Override
     public String getVersion() {
-        Package pkg = Banner.class.getPackage();
-        String version = null;
-        if (pkg != null) {
-            version = pkg.getImplementationVersion();
-        }
-        return (version != null ? version : "Unknown Version");
+        return "0.1";
     }
 }
