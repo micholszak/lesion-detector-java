@@ -71,10 +71,11 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff:
+idea/*
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dictionaries
-
+idea/*
 # Sensitive or high-churn files:
 .idea/**/dataSources/
 .idea/**/dataSources.ids
@@ -154,5 +155,8 @@ hs_err_pid*
 */Makefile
 */cmake_install.cmake
 .DS_Store
+
+#additional
+build/*
 
 # End of https://www.gitignore.io/api/intellij,java,opencv,images
