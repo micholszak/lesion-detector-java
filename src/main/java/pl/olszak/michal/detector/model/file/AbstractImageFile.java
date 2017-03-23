@@ -1,4 +1,4 @@
-package pl.olszak.michal.detector.model.files;
+package pl.olszak.michal.detector.model.file;
 
 import java.io.File;
 
