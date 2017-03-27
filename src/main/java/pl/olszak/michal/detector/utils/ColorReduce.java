@@ -33,8 +33,8 @@ public enum ColorReduce {
 
     public int reduceChannels(int channel) {
         int multiplier = MAX_VALUE / value;
-        if (value < (multiplier * (value - 1))) {
-            return (int) (value / multiplier + 0.5) * multiplier;
+        if (channel < (multiplier * (value - 1))) {
+            return (int) (channel / multiplier + 0.5) * multiplier;
         }
         return MAX_VALUE - 1;
     }

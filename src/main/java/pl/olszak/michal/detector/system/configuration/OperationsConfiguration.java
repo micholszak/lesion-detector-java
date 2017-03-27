@@ -6,6 +6,10 @@ import com.google.gson.GsonBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import pl.olszak.michal.detector.core.operations.controller.ProbabilityMapController;
+import pl.olszak.michal.detector.core.operations.converter.ConvertedContainerCreator;
+import pl.olszak.michal.detector.core.operations.converter.ImageConverter;
+import pl.olszak.michal.detector.core.operations.converter.RegularImageConverter;
 import pl.olszak.michal.detector.utils.FileOperations;
 
 /**
@@ -29,5 +33,23 @@ public class OperationsConfiguration {
                 .enableComplexMapKeySerialization()
                 .setPrettyPrinting()
                 .create();
+    }
+
+    @Bean
+    @Scope("prototype")
+    public ImageConverter converter() {
+        return new RegularImageConverter();
+    }
+
+    @Bean
+    @Scope("prototype")
+    public ConvertedContainerCreator convertedContainerCreator(ImageConverter converter) {
+        return new ConvertedContainerCreator(converter);
+    }
+
+    @Bean
+    @Scope("prototype")
+    public ProbabilityMapController probabilityMapController(FileOperations fileOperations, Gson gson, ConvertedContainerCreator creator) {
+        return new ProbabilityMapController(fileOperations, gson, creator);
     }
 }

@@ -1,8 +1,9 @@
 package pl.olszak.michal.detector.utils;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import pl.olszak.michal.detector.model.file.ImageType;
-import pl.olszak.michal.detector.model.file.container.ImageContainer;
+import pl.olszak.michal.detector.model.file.container.image.ImageContainer;
 
 import java.io.File;
 import java.util.Iterator;

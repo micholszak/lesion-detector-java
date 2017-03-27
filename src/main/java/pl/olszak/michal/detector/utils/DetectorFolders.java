@@ -13,12 +13,12 @@ import java.io.*;
 public final class DetectorFolders {
     private static final Logger logger = LoggerFactory.getLogger(DetectorFolders.class);
 
-    private static final String JSON_FOLDER = "./json";
-    public static final String TEST_RESOURCES_FOLDER = "./test_resources";
-    public static final String LEARNING_RESOURCES_FOLDER = "./learning_resources";
-    public static final String MASK_RESOURCES_FOLDER = "./mask_resources";
-    public static final String RESOULTS_FOLDER = "./resoults";
-    public static final String ENHANCEMENTS = "./ehancements";
+    private static final String JSON_FOLDER = "json";
+    public static final String TEST_RESOURCES_FOLDER = "test_set";
+    public static final String LEARNING_RESOURCES_FOLDER = "images";
+    public static final String MASK_RESOURCES_FOLDER = "mask";
+    public static final String RESOULTS_FOLDER = "results";
+    public static final String ENHANCEMENTS = "ehancements";
 
     public static String readJsonFile(String filename) {
         String json = "";
