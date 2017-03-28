@@ -1,6 +1,7 @@
 package pl.olszak.michal.detector.core.operations.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.opencv.core.Mat;
 import pl.olszak.michal.detector.core.operations.Operations;
 import pl.olszak.michal.detector.core.operations.converter.ConvertedContainerCreator;
@@ -16,6 +17,7 @@ import pl.olszak.michal.detector.utils.FileOperations;
 import pl.olszak.michal.detector.utils.Integers;
 
 import java.awt.*;
+import java.lang.reflect.Type;
 
 /**
  * @author molszak
@@ -35,8 +37,11 @@ public class ProbabilityMapController implements Controller {
 
     @Override
     public void process() {
-        BayessianTable table = populateTable(ColorReduce.BINS_PER_CHANNEL_16);
-        ColorProbabilityMap colorProbabilityMap = createProbabilityMap(table);
+        for (ColorReduce reduce : ColorReduce.values()) {
+            BayessianTable table = populateTable(reduce);
+            ColorProbabilityMap colorProbabilityMap = createProbabilityMap(table);
+            saveData(colorProbabilityMap);
+        }
     }
 
     private BayessianTable populateTable(ColorReduce colorReduce) {
@@ -87,14 +92,13 @@ public class ProbabilityMapController implements Controller {
         final long totalCount = table.getTotalCount();
 
         table.getLesionColors()
-                .entrySet()
-                .forEach(entry -> {
-                    final long nonLesion = table.getNonLesionColors().getOrDefault(entry.getKey(), 0L);
-                    final long lesion = entry.getValue();
+                .forEach((key, value) -> {
+                    final long nonLesion = table.getNonLesionColors().getOrDefault(key, 0L);
+                    final long lesion = value;
 
                     final double lesionProbability = Operations.calculateProbability(lesion, nonLesion, totalCount);
-                    colorProbabilityMap.putLesionProbability(entry.getKey(), lesionProbability);
-                    colorProbabilityMap.putNonLesionProbability(entry.getKey(), 1 - lesionProbability);
+                    colorProbabilityMap.putLesionProbability(key, lesionProbability);
+                    colorProbabilityMap.putNonLesionProbability(key, 1 - lesionProbability);
                 });
 
         table.getNonLesionColors()
@@ -112,6 +116,14 @@ public class ProbabilityMapController implements Controller {
 
 
         return colorProbabilityMap;
+    }
+
+    private void saveData(ColorProbabilityMap colorProbabilityMap) {
+        Type type = new TypeToken<ColorProbabilityMap>() {
+        }.getType();
+        String json = gson.toJson(colorProbabilityMap, type);
+
+        DetectorFolders.saveJson(String.format(DetectorFolders.PROBABILITY_MAP, colorProbabilityMap.getColorMode()), json);
     }
 
 }

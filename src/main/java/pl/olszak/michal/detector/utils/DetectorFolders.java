@@ -1,10 +1,14 @@
 package pl.olszak.michal.detector.utils;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author molszak
@@ -19,6 +23,8 @@ public final class DetectorFolders {
     public static final String MASK_RESOURCES_FOLDER = "mask";
     public static final String RESOULTS_FOLDER = "results";
     public static final String ENHANCEMENTS = "ehancements";
+    public static final String JSON_EXTENSION = ".json";
+    public static final String PROBABILITY_MAP = "probability-map-%d";
 
     public static String readJsonFile(String filename) {
         String json = "";
@@ -35,9 +41,10 @@ public final class DetectorFolders {
     }
 
     public static void saveJson(String filename, String json) {
-        try (FileWriter writer = new FileWriter(new File(JSON_FOLDER, filename))) {
-            writer.write(json);
-            logger.info("Contents of json saved to file %s", filename);
+        File file = new File(JSON_FOLDER, filename + JSON_EXTENSION);
+        try {
+            FileUtils.write(file, json);
+            logger.info(String.format("Contents of json saved to file %s", filename + JSON_EXTENSION));
         } catch (IOException e) {
             logger.error(String.format("Could not save json under %s with name %s", JSON_FOLDER, filename));
         }
