@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.core.CommandMarker;
 import org.springframework.shell.core.annotation.CliCommand;
 import org.springframework.stereotype.Component;
-import pl.olszak.michal.detector.core.operations.controller.ProbabilityMapController;
+import pl.olszak.michal.detector.core.operations.controller.ProbabilityMapCreatorController;
 
 /**
  * @author molszak
@@ -14,11 +14,13 @@ import pl.olszak.michal.detector.core.operations.controller.ProbabilityMapContro
 public class ProbabilityMapCommand implements CommandMarker {
 
     @Autowired
-    private ProbabilityMapController controller;
+    private ProbabilityMapCreatorController controller;
 
-    @CliCommand(value = "train", help = "test for the sake of test")
-    public String train() {
+    @CliCommand(value = "create", help = "Create probability maps for images saved in project location")
+    public String create() {
         controller.process();
-        return "Done";
+        return "Processing of images done";
     }
+
+
 }

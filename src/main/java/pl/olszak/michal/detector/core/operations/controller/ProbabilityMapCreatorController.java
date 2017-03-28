@@ -23,13 +23,13 @@ import java.lang.reflect.Type;
  * @author molszak
  *         created on 27.03.2017.
  */
-public class ProbabilityMapController implements Controller {
+public class ProbabilityMapCreatorController implements Controller {
 
     private final FileOperations fileOperations;
     private final ConvertedContainerCreator creator;
     private final Gson gson;
 
-    public ProbabilityMapController(FileOperations fileOperations, Gson gson, ConvertedContainerCreator creator) {
+    public ProbabilityMapCreatorController(FileOperations fileOperations, Gson gson, ConvertedContainerCreator creator) {
         this.fileOperations = fileOperations;
         this.gson = gson;
         this.creator = creator;
