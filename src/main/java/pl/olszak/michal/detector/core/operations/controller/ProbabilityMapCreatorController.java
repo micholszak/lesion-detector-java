@@ -2,6 +2,8 @@ package pl.olszak.michal.detector.core.operations.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 import org.opencv.core.Mat;
 import pl.olszak.michal.detector.core.operations.Operations;
 import pl.olszak.michal.detector.core.operations.converter.ConvertedContainerCreator;
@@ -23,7 +25,7 @@ import java.lang.reflect.Type;
  * @author molszak
  *         created on 27.03.2017.
  */
-public class ProbabilityMapCreatorController implements Controller {
+public class ProbabilityMapCreatorController {
 
     private final FileOperations fileOperations;
     private final ConvertedContainerCreator creator;
@@ -35,13 +37,10 @@ public class ProbabilityMapCreatorController implements Controller {
         this.creator = creator;
     }
 
-    @Override
     public void process() {
-        for (ColorReduce reduce : ColorReduce.values()) {
-            BayessianTable table = populateTable(reduce);
-            ColorProbabilityMap colorProbabilityMap = createProbabilityMap(table);
-            saveData(colorProbabilityMap);
-        }
+        BayessianTable table = populateTable(ColorReduce.BINS_PER_CHANNEL_256);
+        ColorProbabilityMap colorProbabilityMap = createProbabilityMap(table);
+        saveData(colorProbabilityMap);
     }
 
     private BayessianTable populateTable(ColorReduce colorReduce) {
