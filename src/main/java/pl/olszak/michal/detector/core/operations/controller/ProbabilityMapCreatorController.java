@@ -23,7 +23,7 @@ import java.lang.reflect.Type;
  * @author molszak
  *         created on 27.03.2017.
  */
-public class ProbabilityMapCreatorController implements Controller {
+public class ProbabilityMapCreatorController {
 
     private final FileOperations fileOperations;
     private final ConvertedContainerCreator creator;
@@ -35,7 +35,6 @@ public class ProbabilityMapCreatorController implements Controller {
         this.creator = creator;
     }
 
-    @Override
     public void process() {
         for (ColorReduce reduce : ColorReduce.values()) {
             BayessianTable table = populateTable(reduce);

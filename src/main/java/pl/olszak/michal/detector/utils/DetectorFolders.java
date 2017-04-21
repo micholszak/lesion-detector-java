@@ -43,7 +43,7 @@ public final class DetectorFolders {
     public static void saveJson(String filename, String json) {
         File file = new File(JSON_FOLDER, filename + JSON_EXTENSION);
         try {
-            FileUtils.write(file, json);
+            FileUtils.writeStringToFile(file, json);
             logger.info(String.format("Contents of json saved to file %s", filename + JSON_EXTENSION));
         } catch (IOException e) {
             logger.error(String.format("Could not save json under %s with name %s", JSON_FOLDER, filename));
