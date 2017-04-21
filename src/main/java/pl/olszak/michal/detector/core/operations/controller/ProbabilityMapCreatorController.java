@@ -2,8 +2,6 @@ package pl.olszak.michal.detector.core.operations.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
 import org.opencv.core.Mat;
 import pl.olszak.michal.detector.core.operations.Operations;
 import pl.olszak.michal.detector.core.operations.converter.ConvertedContainerCreator;
