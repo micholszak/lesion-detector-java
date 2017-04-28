@@ -36,11 +36,9 @@ public class ProbabilityMapCreatorController {
     }
 
     public void process() {
-        for (ColorReduce reduce : ColorReduce.values()) {
-            BayessianTable table = populateTable(reduce);
-            ColorProbabilityMap colorProbabilityMap = createProbabilityMap(table);
-            saveData(colorProbabilityMap);
-        }
+        BayessianTable table = populateTable(ColorReduce.BINS_PER_CHANNEL_256);
+        ColorProbabilityMap colorProbabilityMap = createProbabilityMap(table);
+        saveData(colorProbabilityMap);
     }
 
     private BayessianTable populateTable(ColorReduce colorReduce) {

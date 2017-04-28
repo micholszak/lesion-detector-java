@@ -21,7 +21,7 @@ public final class DetectorFolders {
     public static final String TEST_RESOURCES_FOLDER = "test_set";
     public static final String LEARNING_RESOURCES_FOLDER = "images";
     public static final String MASK_RESOURCES_FOLDER = "mask";
-    public static final String RESOULTS_FOLDER = "results";
+    public static final String RESULTS = "results";
     public static final String ENHANCEMENTS = "ehancements";
     public static final String JSON_EXTENSION = ".json";
     public static final String PROBABILITY_MAP = "probability-map-%d";

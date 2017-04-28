@@ -37,7 +37,6 @@ public class ScreensConfiguration {
     private static final String STYLESHEET = "/main.css";
 
     private Stage stage;
-    private Scene scene;
     private StackPane root;
 
     public void setStage(Stage stage) {
@@ -52,7 +51,7 @@ public class ScreensConfiguration {
         JFXDecorator decorator = new JFXDecorator(stage, root);
         decorator.setCustomMaximize(true);
 
-        scene = new Scene(decorator, WIDTH, HEIGHT);
+        Scene scene = new Scene(decorator, WIDTH, HEIGHT);
         final ObservableList<String> stylesheets = scene.getStylesheets();
         stylesheets.add(getClass().getResource(STYLESHEET).toExternalForm());
 
