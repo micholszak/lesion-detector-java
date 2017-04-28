@@ -1,33 +1,75 @@
+* {
+  -dark-primary-color: #00796B;
+  -primary-color: #009688;
+  -light-primary-color: #B2DFDB;
+  -accent-color: #CDDC39;
+  -primary-text-color: #212121;
+  -secondary-text-color: #727272;
+  -text-icons: #FFFFFF;
+  -divider-color: #B6B6B6;
+}
+
+.root {
+  -fx-font-family: "Roboto";
+}
+
+
 .main-window {
  -fx-padding: 0;
- -fx-background-color: #CAD2D7;
  -fx-background-position: left top, left 19px top 15px ;
  -fx-background-insets: 2,2,2,2;
- -fx-border-color: #48BD31;
+ -fx-background-color: white;
+ -fx-border-color: -dark-primary-color;
  -fx-border-width: 3;
 }
 
+.jfx-decorator .jfx-decorator-buttons-container {
+  -fx-background-color: -dark-primary-color;
+}
+
+.jfx-decorator .resize-border {
+  -fx-border-color: -dark-primary-color;
+  -fx-border-width: 0 4 4 4;
+}
+
+.jfx-rippler:hover {
+  -fx-cursor: hand;
+}
+
 .label {
-	-fx-text-fill: #2D3438;
+	-fx-text-fill: -primary-text-color
 	-fx-label-padding: 5,5,5,5;
-	-fx-font-family: "Tahoma"; 
-	-fx-font-size: 12; 
-}
-
-.button {
-    -fx-background-color: #48BD31;
-    -fx-background-insets: 1,1,1,1;
-    -fx-border-color: #48BD31;
-    -fx-border-width: 3;
-    -fx-padding: 3;
-    -fx-text-fill: #FFFFFF;
-	-fx-font-family: "Tahoma";
+	-fx-font-family: "Roboto";
 	-fx-font-size: 14;
-	-fx-font-weight: bold;
 }
 
-.button:hover {
-    -fx-background-color: #2D3438;
-    -fx-border-color: #2D3438;
-    -fx-text-fill: #48BD31;
+.jfx-button-raised {
+  -fx-background-color: -accent-color;
+  -fx-background-insets: 1,1,1,1;
+  -fx-border-width: 3;
+  -fx-padding: 3;
+  -fx-text-fill: -text-icons;
+	-fx-font-family: "Roboto";
+	-fx-font-size: 14;
+}
+
+/*
+* JFX TextField
+*/
+
+.jfx-text-field, .jfx-password-field {
+    -fx-background-color: transparent;
+    -fx-font-weight: normal;
+    -fx-prompt-text-fill: #808080;
+    -fx-alignment: top-left;
+    -fx-max-width: 300.0;
+    -fx-font-family: "Roboto";
+    -fx-pref-width: 300.0;
+    -jfx-focus-color: -primary-text-color;
+    -jfx-unfocus-color: -secondary-text-color;
+}
+
+.jfx-text-area .viewport {
+    -fx-background-color: #F5F6D4;
+    -fx-font-family: "Roboto";
 }

@@ -34,7 +34,7 @@ public class ScreensConfiguration {
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
     // TODO: 21.04.2017 wymienić stylesheet na coś fajnego
-    private static final String STYLESHEET = "main.css";
+    private static final String STYLESHEET = "/main.css";
 
     private Stage stage;
     private Scene scene;
@@ -54,8 +54,7 @@ public class ScreensConfiguration {
 
         scene = new Scene(decorator, WIDTH, HEIGHT);
         final ObservableList<String> stylesheets = scene.getStylesheets();
-        /*stylesheets.addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
-                getClass().getResource("/css/jfoenix-design.css").toExternalForm());*/
+        stylesheets.add(getClass().getResource(STYLESHEET).toExternalForm());
 
         stage.setScene(scene);
         stage.setMinHeight(HEIGHT);
