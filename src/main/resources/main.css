@@ -10,47 +10,47 @@
 }
 
 .root {
-  -fx-font-family: "Roboto";
+    -fx-font-family: "Roboto";
 }
 
 
 .main-window {
- -fx-padding: 0;
- -fx-background-position: left top, left 19px top 15px ;
- -fx-background-insets: 2,2,2,2;
- -fx-background-color: white;
- -fx-border-color: -dark-primary-color;
- -fx-border-width: 3;
+    -fx-padding: 0;
+    -fx-background-position: left top, left 19px top 15px ;
+    -fx-background-insets: 2,2,2,2;
+    -fx-background-color: white;
+    -fx-border-color: -dark-primary-color;
+    -fx-border-width: 3;
 }
 
 .jfx-decorator .jfx-decorator-buttons-container {
-  -fx-background-color: -dark-primary-color;
+    -fx-background-color: -dark-primary-color;
 }
 
 .jfx-decorator .resize-border {
-  -fx-border-color: -dark-primary-color;
-  -fx-border-width: 0 4 4 4;
+    -fx-border-color: -dark-primary-color;
+    -fx-border-width: 0 4 4 4;
 }
 
 .jfx-rippler:hover {
-  -fx-cursor: hand;
+    -fx-cursor: hand;
 }
 
 .label {
-	-fx-text-fill: -primary-text-color
+	-fx-text-fill: -primary-text-color;
 	-fx-label-padding: 5,5,5,5;
 	-fx-font-family: "Roboto";
 	-fx-font-size: 14;
 }
 
 .jfx-button-raised {
-  -fx-background-color: -accent-color;
-  -fx-background-insets: 1,1,1,1;
-  -fx-border-width: 3;
-  -fx-padding: 3;
-  -fx-text-fill: -text-icons;
-	-fx-font-family: "Roboto";
-	-fx-font-size: 14;
+    -fx-background-color: -accent-color;
+    -fx-background-insets: 1,1,1,1;
+    -fx-border-width: 3;
+    -fx-padding: 3;
+    -fx-text-fill: -text-icons;
+    -fx-font-family: "Roboto";
+    -fx-font-size: 14;
 }
 
 /*

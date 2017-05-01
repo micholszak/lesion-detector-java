@@ -20,7 +20,7 @@
             <HBox spacing="15.0" VBox.vgrow="NEVER">
                <children>
                   <JFXTextField editable="false" promptText="Mask resources folder" />
-                  <JFXButton buttonType="RAISED" onMouseClicked="#openMaskFolder" text="OPEN" />
+                  <JFXButton styleClass="jfx-button-raised" buttonType="RAISED" onMouseClicked="#openMaskFolder" text="OPEN" />
                </children>
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -32,7 +32,7 @@
             <HBox spacing="15.0" VBox.vgrow="NEVER">
                <children>
                   <JFXTextField promptText="Segmentation resources folder" />
-                  <JFXButton buttonType="RAISED" onMouseClicked="#openSegmentationFolder" text="OPEN" />
+                  <JFXButton styleClass="jfx-button-raised" buttonType="RAISED" onMouseClicked="#openSegmentationFolder" text="OPEN" />
                </children>
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
