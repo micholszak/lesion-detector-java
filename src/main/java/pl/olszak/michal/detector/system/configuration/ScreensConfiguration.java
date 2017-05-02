@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import pl.olszak.michal.detector.fx.Presentation;
 import pl.olszak.michal.detector.fx.scenes.FileReaderWindow;
+import pl.olszak.michal.detector.utils.TextAreaAppender;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,7 +28,6 @@ import java.util.ResourceBundle;
  */
 @Configuration
 @Lazy
-// TODO: 21.04.2017 dodać datafx może
 public class ScreensConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(ScreensConfiguration.class);
@@ -38,12 +39,17 @@ public class ScreensConfiguration {
 
     private Stage stage;
     private StackPane root;
+    private TextAreaAppender appender;
 
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
     public void show() {
+        ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        appender = (TextAreaAppender) rootLogger.getAppender("TEXTAREA");
+
+
         root = new StackPane();
         root.getStyleClass().add("main-window");
         stage.setTitle("Leasion-Detector");
@@ -61,6 +67,10 @@ public class ScreensConfiguration {
 
         stage.setOnHiding(event -> System.exit(0));
         stage.show();
+    }
+
+    public void displayLogMessages(TextArea textArea) {
+        appender.setTextArea(textArea);
     }
 
     public void loadFileReaderWindow() {

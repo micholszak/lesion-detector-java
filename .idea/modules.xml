@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lesion-detector.iml" filepath="$PROJECT_DIR$/.idea/modules/lesion-detector.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lesion-detector_main.iml" filepath="$PROJECT_DIR$/.idea/modules/lesion-detector_main.iml" group="lesion-detector" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lesion-detector_test.iml" filepath="$PROJECT_DIR$/.idea/modules/lesion-detector_test.iml" group="lesion-detector" />
     </modules>
   </component>
 </project>
