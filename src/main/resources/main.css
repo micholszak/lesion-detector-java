@@ -1,16 +1,13 @@
-* {
-  -dark-primary-color: #00796B;
-  -primary-color: #009688;
-  -light-primary-color: #B2DFDB;
-  -accent-color: #CDDC39;
-  -primary-text-color: #212121;
-  -secondary-text-color: #727272;
-  -text-icons: #FFFFFF;
-  -divider-color: #B6B6B6;
-}
-
 .root {
     -fx-font-family: "Roboto";
+    dark-primary-color: #00796B;
+    primary-color: #009688;
+    light-primary-color: #B2DFDB;
+    accent-color: #CDDC39;
+    primary-text-color: #212121;
+    secondary-text-color: #727272;
+    text-icons: #FFFFFF;
+    divider-color: #B6B6B6;
 }
 
 
@@ -19,16 +16,16 @@
     -fx-background-position: left top, left 19px top 15px ;
     -fx-background-insets: 2,2,2,2;
     -fx-background-color: white;
-    -fx-border-color: -dark-primary-color;
+    -fx-border-color: dark-primary-color;
     -fx-border-width: 3;
 }
 
 .jfx-decorator .jfx-decorator-buttons-container {
-    -fx-background-color: -dark-primary-color;
+    -fx-background-color: dark-primary-color;
 }
 
 .jfx-decorator .resize-border {
-    -fx-border-color: -dark-primary-color;
+    -fx-border-color: dark-primary-color;
     -fx-border-width: 0 4 4 4;
 }
 
@@ -37,18 +34,18 @@
 }
 
 .label {
-	-fx-text-fill: -primary-text-color;
+	-fx-text-fill: primary-text-color;
 	-fx-label-padding: 5,5,5,5;
 	-fx-font-family: "Roboto";
 	-fx-font-size: 14;
 }
 
 .jfx-button-raised {
-    -fx-background-color: -accent-color;
+    -fx-background-color: accent-color;
     -fx-background-insets: 1,1,1,1;
     -fx-border-width: 3;
     -fx-padding: 3;
-    -fx-text-fill: -text-icons;
+    -fx-text-fill: text-icons;
     -fx-font-family: "Roboto";
     -fx-font-size: 14;
 }
@@ -65,14 +62,14 @@
     -fx-max-width: 300.0;
     -fx-font-family: "Roboto";
     -fx-pref-width: 300.0;
-    -jfx-focus-color: -primary-text-color;
-    -jfx-unfocus-color: -secondary-text-color;
+    -jfx-focus-color: primary-text-color;
+    -jfx-unfocus-color: secondary-text-color;
 }
 
 .jfx-text-area .viewport {
     -fx-border-width: 2;
-    -fx-border-color: -accent-color;
-    -fx-background-color: -text-icons;
+    -fx-border-color: accent-color;
+    -fx-background-color: text-icons;
     -fx-font-family: "Roboto";
 }
 
