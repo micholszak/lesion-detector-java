@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane prefHeight="400.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.olszak.michal.detector.fx.MainWindow">
+    <children>
+      <VBox>
+         <children>
+              <JFXTabPane VBox.vgrow="NEVER">
+                  <tabs>
+                      <Tab onSelectionChanged="#loadDatabaseCreation" text="Create Databse">
+                          <content>
+                              <StackPane fx:id="databaseView" prefHeight="400" prefWidth="600.0" />
+                          </content>
+                      </Tab>
+                      <Tab onSelectionChanged="#loadSegmentation" text="Segmentation">
+                          <content>
+                              <StackPane fx:id="emptyView" prefHeight="400" prefWidth="600.0" />
+                          </content>
+                      </Tab>
+                  </tabs>
+              </JFXTabPane>
+              <JFXTextArea fx:id="loggerOutput" editable="false" maxHeight="120.0" promptText="Console Output" VBox.vgrow="NEVER"/>
+         </children>
+      </VBox>
+    </children>
+</StackPane>

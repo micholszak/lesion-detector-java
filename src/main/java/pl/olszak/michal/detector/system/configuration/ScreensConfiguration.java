@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -14,8 +15,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
+import pl.olszak.michal.detector.fx.MainWindow;
 import pl.olszak.michal.detector.fx.Presentation;
-import pl.olszak.michal.detector.fx.scenes.FileReaderWindow;
+import pl.olszak.michal.detector.fx.scenes.database.DatabaseWindow;
+import pl.olszak.michal.detector.fx.scenes.EmptyTestWindow;
 import pl.olszak.michal.detector.utils.TextAreaAppender;
 
 import java.io.IOException;
@@ -43,6 +46,10 @@ public class ScreensConfiguration {
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 
     public void show() {
@@ -73,14 +80,34 @@ public class ScreensConfiguration {
         appender.setTextArea(textArea);
     }
 
-    public void loadFileReaderWindow() {
-        setNode(getNode(fileReaderWindow(), getClass().getResource("/fxml/FileReaderWindow.fxml")));
+    public void loadDatabaseWindow(Pane pane) {
+        pane.getChildren().setAll(getNode(databaseWindow(), getClass().getResource("/fxml/DatabaseWindow.fxml")));
+    }
+
+    public void loadEmptyWindow(Pane pane) {
+        pane.getChildren().setAll(getNode(emptyTestWindow(), getClass().getResource("/fxml/EmptyTestWindow.fxml")));
+    }
+
+    public void loadMainWindow() {
+        setNode(getNode(mainWindow(), getClass().getResource("/fxml/MainWindow.fxml")));
+    }
+
+    @Bean
+    @Scope("singleton")
+    DatabaseWindow databaseWindow() {
+        return new DatabaseWindow(this);
     }
 
     @Bean
     @Scope("prototype")
-    FileReaderWindow fileReaderWindow() {
-        return new FileReaderWindow(this);
+    MainWindow mainWindow() {
+        return new MainWindow(this);
+    }
+
+    @Bean
+    @Scope("prototype")
+    EmptyTestWindow emptyTestWindow() {
+        return new EmptyTestWindow(this);
     }
 
     private void setNode(Node node) {

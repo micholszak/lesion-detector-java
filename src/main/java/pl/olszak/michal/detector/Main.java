@@ -42,7 +42,7 @@ public class Main extends Application {
             ScreensConfiguration screensConfiguration = context.getBean(ScreensConfiguration.class);
             screensConfiguration.setStage(primaryStage);
             screensConfiguration.show();
-            screensConfiguration.loadFileReaderWindow();
+            screensConfiguration.loadMainWindow();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

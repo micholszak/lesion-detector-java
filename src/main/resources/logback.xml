@@ -19,7 +19,6 @@
 
     <logger name="org.springframework" level="debug" additivity="false">
         <appender-ref ref="STDOUT"/>
-        <appender-ref ref="TEXTAREA"/>
     </logger>
 
     <logger name="pl.olszak.michal.detector" level="debug" additivity="false">

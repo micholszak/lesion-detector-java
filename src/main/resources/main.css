@@ -68,14 +68,22 @@
 
 .jfx-text-area .viewport {
     -fx-border-width: 2;
-    -fx-border-color: accent-color;
-    -fx-background-color: text-icons;
+    -fx-border-color: dark-primary-color;
+    -fx-background-color: white;
     -fx-font-family: "Roboto";
 }
 
-/*
+/**
+* TAB PANE
+**/
+
+.jfx-tab-pane .tab-header-background {
+    -fx-background-color: primary-color;
+}
+
+/**
 * ScrollBar
-*/
+**/
 
 .scroll-bar:vertical > .track-background, .scroll-bar:horizontal > .track-background {
     -fx-background-color: #F1F1F1;
