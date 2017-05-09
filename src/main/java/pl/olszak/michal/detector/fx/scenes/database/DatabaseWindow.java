@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.olszak.michal.detector.fx.Presentation;
 import pl.olszak.michal.detector.system.configuration.ScreensConfiguration;
+import pl.olszak.michal.detector.utils.DialogUtils;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -48,7 +49,7 @@ public class DatabaseWindow extends Presentation {
     @FXML
     public void onOpenResourcesFolder() {
         logger.info("Open segmentation folder");
-        Optional<File> imageResources = openFolder("Image Resources Folder");
+        Optional<File> imageResources = DialogUtils.openFolder("Image Resources Folder", screensConfiguration.getStage());
         if (imageResources.isPresent()) {
             File file = imageResources.get();
             model.setImageResourcesFolder(file.getAbsolutePath());
@@ -60,24 +61,11 @@ public class DatabaseWindow extends Presentation {
     @FXML
     public void onOpenMaskFolder() {
         logger.info("Open mask folder");
-        Optional<File> maskResources = openFolder("Mask Resources");
+        Optional<File> maskResources = DialogUtils.openFolder("Mask Resources", screensConfiguration.getStage());
         if (maskResources.isPresent()) {
             File file = maskResources.get();
             model.setMaskFolder(file.getAbsolutePath());
             maskResourcesText.setText(file.getAbsolutePath());
         }
-    }
-
-
-    // TODO: 08.05.2017 should be somewhere else, probably {@link ScreensConfiguration.class}
-    private Optional<File> openFolder(String windowTitle) {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle(windowTitle);
-        directoryChooser.setInitialDirectory(new File(Paths.get(".").toAbsolutePath().toString()));
-        File directory = directoryChooser.showDialog(screensConfiguration.getStage());
-        if (directory == null) {
-            return Optional.empty();
-        }
-        return Optional.of(directory);
     }
 }

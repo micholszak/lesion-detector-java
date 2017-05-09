@@ -19,7 +19,7 @@ import pl.olszak.michal.detector.fx.MainWindow;
 import pl.olszak.michal.detector.fx.Presentation;
 import pl.olszak.michal.detector.fx.scenes.database.DatabaseWindow;
 import pl.olszak.michal.detector.fx.scenes.EmptyTestWindow;
-import pl.olszak.michal.detector.utils.TextAreaAppender;
+import pl.olszak.michal.detector.utils.logging.TextAreaAppender;
 
 import java.io.IOException;
 import java.net.URL;
