@@ -40,8 +40,8 @@ public final class DetectorFolders {
         return json;
     }
 
-    public static void saveJson(String filename, String json) {
-        File file = new File(JSON_FOLDER, filename + JSON_EXTENSION);
+    public static void saveJson(String filename, String json, String databaseFolder) {
+        File file = new File(databaseFolder, filename + JSON_EXTENSION);
         try {
             FileUtils.writeStringToFile(file, json);
             logger.info(String.format("Contents of json saved to file %s", filename + JSON_EXTENSION));

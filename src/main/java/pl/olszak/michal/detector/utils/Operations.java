@@ -1,4 +1,4 @@
-package pl.olszak.michal.detector.core.operations;
+package pl.olszak.michal.detector.utils;
 
 /**
  * @author molszak

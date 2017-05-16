@@ -2,19 +2,19 @@ package pl.olszak.michal.detector.core.operations.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import io.reactivex.Single;
 import org.opencv.core.Mat;
-import pl.olszak.michal.detector.core.operations.Operations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.olszak.michal.detector.core.operations.converter.ConvertedContainerCreator;
+import pl.olszak.michal.detector.fx.scenes.database.DatabaseWindowContext;
 import pl.olszak.michal.detector.model.data.BayessianTable;
 import pl.olszak.michal.detector.model.data.ColorProbabilityMap;
 import pl.olszak.michal.detector.model.file.ImageType;
 import pl.olszak.michal.detector.model.file.container.coverted.ConvertedContainer;
 import pl.olszak.michal.detector.model.file.container.coverted.ConvertedFile;
 import pl.olszak.michal.detector.model.file.container.image.ImageContainer;
-import pl.olszak.michal.detector.utils.ColorReduce;
-import pl.olszak.michal.detector.utils.DetectorFolders;
-import pl.olszak.michal.detector.utils.FileOperations;
-import pl.olszak.michal.detector.utils.Integers;
+import pl.olszak.michal.detector.utils.*;
 
 import java.awt.*;
 import java.lang.reflect.Type;
@@ -24,6 +24,8 @@ import java.lang.reflect.Type;
  *         created on 27.03.2017.
  */
 public class ProbabilityMapCreatorController {
+
+    private final Logger logger = LoggerFactory.getLogger(ProbabilityMapCreatorController.class);
 
     private final FileOperations fileOperations;
     private final ConvertedContainerCreator creator;
@@ -35,16 +37,18 @@ public class ProbabilityMapCreatorController {
         this.creator = creator;
     }
 
-    public void process() {
-        BayessianTable table = populateTable(ColorReduce.BINS_PER_CHANNEL_256);
+    public boolean process(final ColorReduce colorReduce, final DatabaseWindowContext context) {
+        logger.info("Started process");
+        BayessianTable table = populateTable(colorReduce, context);
         ColorProbabilityMap colorProbabilityMap = createProbabilityMap(table);
-        saveData(colorProbabilityMap);
+        saveData(colorProbabilityMap, context.getJsonDatabaseFolder());
+        return true;
     }
 
-    private BayessianTable populateTable(ColorReduce colorReduce) {
+    private BayessianTable populateTable(final ColorReduce colorReduce, final DatabaseWindowContext context) {
         BayessianTable table = new BayessianTable(colorReduce.getValue());
-        ImageContainer colored = fileOperations.create(DetectorFolders.LEARNING_RESOURCES_FOLDER, ImageType.COLORED);
-        ImageContainer mask = fileOperations.create(DetectorFolders.MASK_RESOURCES_FOLDER, ImageType.GRAYSCALE_MASK);
+        ImageContainer colored = fileOperations.create(context.getImageResourcesFolder(), ImageType.COLORED);
+        ImageContainer mask = fileOperations.create(context.getMaskFolder(), ImageType.GRAYSCALE_MASK);
 
         ConvertedContainer coloredConverted = creator.createColoredContainer(colored.getImages());
         ConvertedContainer maskConverted = creator.createThresholded(mask.getImages(), 128, true);
@@ -55,10 +59,14 @@ public class ProbabilityMapCreatorController {
                     ConvertedFile coloredFile = coloredConverted.getConvertedFiles().get(entry.getKey());
                     ConvertedFile maskFile = entry.getValue();
 
+                    logger.info(String.format("Processing %s", coloredFile.getImage().getFileName()));
+                    logger.info(Thread.currentThread().getName());
+
                     Mat coloredMat = coloredFile.getConverted();
                     Mat maskMat = maskFile.getConverted();
 
                     if (coloredMat.size().equals(maskMat.size())) {
+
                         for (int row = 0; row < coloredMat.size().height; row++) {
                             for (int col = 0; col < coloredMat.size().width; col++) {
                                 byte[] colors = new byte[coloredMat.channels()];
@@ -115,12 +123,12 @@ public class ProbabilityMapCreatorController {
         return colorProbabilityMap;
     }
 
-    private void saveData(ColorProbabilityMap colorProbabilityMap) {
+    private void saveData(ColorProbabilityMap colorProbabilityMap, String databaseFolder) {
         Type type = new TypeToken<ColorProbabilityMap>() {
         }.getType();
         String json = gson.toJson(colorProbabilityMap, type);
 
-        DetectorFolders.saveJson(String.format(DetectorFolders.PROBABILITY_MAP, colorProbabilityMap.getColorMode()), json);
+        DetectorFolders.saveJson(databaseFolder, String.format(DetectorFolders.PROBABILITY_MAP, colorProbabilityMap.getColorMode()), json);
     }
 
 }

@@ -9,38 +9,51 @@ import java.util.Optional;
  */
 public class DatabaseWindowContext extends Observable {
 
-    private Optional<String> maskFolder;
-    private Optional<String> resourcesFolder;
+    private String maskFolder;
+    private String resourcesFolder;
+    private String jsonDatabaseFolder;
 
     public DatabaseWindowContext() {
-        maskFolder = Optional.empty();
-        resourcesFolder = Optional.empty();
+        maskFolder = "";
+        resourcesFolder = "";
+        jsonDatabaseFolder = "";
     }
 
-    public Optional<String> getMaskFolder() {
+    public String getMaskFolder() {
         return maskFolder;
     }
 
-    public Optional<String> getImageResourcesFolder() {
+    public String getImageResourcesFolder() {
         return resourcesFolder;
     }
 
+    public String getJsonDatabaseFolder() {
+        return jsonDatabaseFolder;
+    }
+
     public void setMaskFolder(String maskFolder) {
-        if (maskFolder == null ||
-                (this.maskFolder.isPresent() && maskFolder.equals(this.maskFolder.get()))) {
+        if (maskFolder == null || maskFolder.equals(this.maskFolder)) {
             return;
         }
-        this.maskFolder = Optional.of(maskFolder);
+        this.maskFolder = maskFolder;
         setChanged();
         notifyObservers();
     }
 
     public void setImageResourcesFolder(String imageResourcesFolder) {
-        if (imageResourcesFolder == null ||
-                (this.resourcesFolder.isPresent() && imageResourcesFolder.equals(this.resourcesFolder.get()))) {
+        if (imageResourcesFolder == null || imageResourcesFolder.equals(this.resourcesFolder)) {
             return;
         }
-        this.resourcesFolder = Optional.of(imageResourcesFolder);
+        this.resourcesFolder = imageResourcesFolder;
+        setChanged();
+        notifyObservers();
+    }
+
+    public void setJsonDatabaseFolder(String jsonDatabaseFolder) {
+        if (jsonDatabaseFolder == null || jsonDatabaseFolder.equals(this.jsonDatabaseFolder)) {
+            return;
+        }
+        this.jsonDatabaseFolder = jsonDatabaseFolder;
         setChanged();
         notifyObservers();
     }

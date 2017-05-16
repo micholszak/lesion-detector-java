@@ -1,12 +1,12 @@
 .root {
     -fx-font-family: "Roboto";
-    dark-primary-color: #00796B;
-    primary-color: #009688;
-    light-primary-color: #B2DFDB;
-    accent-color: #CDDC39;
+    dark-primary-color: #F57C00;
+    primary-color: #FF9800;
+    light-primary-color: #FFE0B2;
+    accent-color: #bdc3c7;
     primary-text-color: #212121;
     secondary-text-color: #727272;
-    text-icons: #FFFFFF;
+    text-icons: #212121;
     divider-color: #B6B6B6;
 }
 
@@ -115,3 +115,18 @@
 .scroll-bar > .decrement-button > .decrement-arrow {
     -fx-shape: "M298 598l214-214 214 214h-428z";
 }
+
+/**
+* SPINNERS
+**/
+
+.jfx-spinner {
+    -jfx-radius: 40;
+}
+
+.jfx-spinner > .arc{
+    -fx-stroke-width: 5.0;
+    -fx-fill: transparent;
+    -fx-stroke: primary-color;
+}
+

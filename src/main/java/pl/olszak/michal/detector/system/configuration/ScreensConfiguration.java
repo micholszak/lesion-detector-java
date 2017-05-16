@@ -56,7 +56,6 @@ public class ScreensConfiguration {
         ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         appender = (TextAreaAppender) rootLogger.getAppender("TEXTAREA");
 
-
         root = new StackPane();
         root.getStyleClass().add("main-window");
         stage.setTitle("Leasion-Detector");
@@ -81,11 +80,11 @@ public class ScreensConfiguration {
     }
 
     public void loadDatabaseWindow(Pane pane) {
-        pane.getChildren().setAll(getNode(databaseWindow(), getClass().getResource("/fxml/DatabaseWindow.fxml")));
+        pane.getChildren().setAll(getNode(databaseWindow(), getClass().getResource("/fxml/ui/DatabaseWindow.fxml")));
     }
 
     public void loadEmptyWindow(Pane pane) {
-        pane.getChildren().setAll(getNode(emptyTestWindow(), getClass().getResource("/fxml/EmptyTestWindow.fxml")));
+        pane.getChildren().setAll(getNode(emptyTestWindow(), getClass().getResource("/fxml/ui/EmptyTestWindow.fxml")));
     }
 
     public void loadMainWindow() {

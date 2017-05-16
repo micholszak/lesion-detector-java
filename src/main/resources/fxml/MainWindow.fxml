@@ -2,30 +2,31 @@
 
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXTextArea?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
 
-<StackPane prefHeight="400.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.olszak.michal.detector.fx.MainWindow">
+<StackPane prefHeight="400.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="pl.olszak.michal.detector.fx.MainWindow">
     <children>
-      <VBox>
-         <children>
-              <JFXTabPane VBox.vgrow="NEVER">
-                  <tabs>
-                      <Tab onSelectionChanged="#loadDatabaseCreation" text="Create Databse">
-                          <content>
-                              <StackPane fx:id="databaseView" prefHeight="400" prefWidth="600.0" />
-                          </content>
-                      </Tab>
-                      <Tab onSelectionChanged="#loadSegmentation" text="Segmentation">
-                          <content>
-                              <StackPane fx:id="emptyView" prefHeight="400" prefWidth="600.0" />
-                          </content>
-                      </Tab>
-                  </tabs>
-              </JFXTabPane>
-              <JFXTextArea fx:id="loggerOutput" editable="false" maxHeight="120.0" promptText="Console Output" VBox.vgrow="NEVER"/>
-         </children>
-      </VBox>
+        <JFXTabPane StackPane.alignment="TOP_CENTER">
+            <tabs>
+                <Tab onSelectionChanged="#loadDatabaseCreation" text="Create Databse">
+                    <content>
+                        <StackPane fx:id="databaseView" prefHeight="400" prefWidth="600.0"/>
+                    </content>
+                </Tab>
+                <Tab onSelectionChanged="#loadSegmentation" text="Segmentation">
+                    <content>
+                        <StackPane fx:id="emptyView" prefHeight="400" prefWidth="600.0"/>
+                    </content>
+                </Tab>
+            </tabs>
+            <StackPane.margin>
+                <Insets bottom="120.0"/>
+            </StackPane.margin>
+        </JFXTabPane>
+        <JFXTextArea fx:id="loggerOutput" editable="false" labelFloat="true" maxHeight="120.0"
+                     promptText="Console Output" StackPane.alignment="BOTTOM_CENTER"/>
     </children>
 </StackPane>
