@@ -1,7 +1,6 @@
 package pl.olszak.michal.detector.fx.scenes.database;
 
 import java.util.Observable;
-import java.util.Optional;
 
 /**
  * @author molszak
@@ -11,12 +10,11 @@ public class DatabaseWindowContext extends Observable {
 
     private String maskFolder;
     private String resourcesFolder;
-    private String jsonDatabaseFolder;
+    private boolean loading = false;
 
     public DatabaseWindowContext() {
         maskFolder = "";
         resourcesFolder = "";
-        jsonDatabaseFolder = "";
     }
 
     public String getMaskFolder() {
@@ -27,8 +25,8 @@ public class DatabaseWindowContext extends Observable {
         return resourcesFolder;
     }
 
-    public String getJsonDatabaseFolder() {
-        return jsonDatabaseFolder;
+    public boolean isLoading() {
+        return loading;
     }
 
     public void setMaskFolder(String maskFolder) {
@@ -49,12 +47,7 @@ public class DatabaseWindowContext extends Observable {
         notifyObservers();
     }
 
-    public void setJsonDatabaseFolder(String jsonDatabaseFolder) {
-        if (jsonDatabaseFolder == null || jsonDatabaseFolder.equals(this.jsonDatabaseFolder)) {
-            return;
-        }
-        this.jsonDatabaseFolder = jsonDatabaseFolder;
-        setChanged();
-        notifyObservers();
+    public void setLoading(boolean loading) {
+        this.loading = loading;
     }
 }

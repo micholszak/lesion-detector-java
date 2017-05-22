@@ -1,7 +1,8 @@
 package pl.olszak.michal.detector.utils;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.olszak.michal.detector.model.file.ImageType;
 import pl.olszak.michal.detector.model.file.container.image.ImageContainer;
 
@@ -13,6 +14,8 @@ import java.util.Iterator;
  *         created on 23.03.2017.
  */
 public final class FileOperations {
+
+    private final Logger logger = LoggerFactory.getLogger(FileOperations.class);
 
     private final String[] ACCEPTABLE_EXTENSIONS;
 
@@ -33,6 +36,7 @@ public final class FileOperations {
         iterator.forEachRemaining(file -> {
             if (file.isFile()) {
                 container.addImage(file);
+                logger.info(String.format("Added $1%s to container", file.getName()));
             }
         });
 

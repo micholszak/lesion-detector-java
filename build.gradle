@@ -28,6 +28,7 @@ configurations.all {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile 'org.springframework.boot:spring-boot-starter:1.5.3.RELEASE'
+    compile 'org.springframework.data:spring-data-mongodb:1.10.3.RELEASE'
 
     compile 'org.openpnp:opencv:3.2.0-0'
     compile 'com.google.code.gson:gson:2.8.0'

@@ -1,25 +1,20 @@
 package pl.olszak.michal.detector.fx.scenes.database;
 
-import com.jfoenix.controls.JFXSpinner;
 import com.jfoenix.controls.JFXTextField;
 import io.reactivex.Observable;
-import io.reactivex.Single;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.stage.DirectoryChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import pl.olszak.michal.detector.core.operations.controller.ProbabilityMapCreatorController;
+import org.springframework.util.StringUtils;
+import pl.olszak.michal.detector.controller.ProbabilityMapCreatorController;
 import pl.olszak.michal.detector.fx.Presentation;
 import pl.olszak.michal.detector.system.configuration.ScreensConfiguration;
 import pl.olszak.michal.detector.utils.ColorReduce;
 import pl.olszak.michal.detector.utils.DialogUtils;
 
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
@@ -34,11 +29,9 @@ public class DatabaseWindow extends Presentation {
     private JFXTextField maskResourcesText;
     @FXML
     private JFXTextField imageResourcesText;
-    @FXML
-    private JFXSpinner spinner;
 
     @Autowired
-    ProbabilityMapCreatorController probabilityMapCreatorController;
+    private ProbabilityMapCreatorController probabilityMapCreatorController;
     @Autowired
     private DatabaseWindowContext model;
 
@@ -79,18 +72,20 @@ public class DatabaseWindow extends Presentation {
 
     @FXML
     public void onProcessTraining() {
-        logger.info("Process training");
-        Optional<File> jsonDatabaseFolder = DialogUtils.openFolder("Choose folder, to store json database", screensConfiguration.getStage());
-        if (!jsonDatabaseFolder.isPresent()) {
-            logger.error("Didn't choose any folder, abort");
+        //todo move the multithreading logic to controller
+        if (StringUtils.isEmpty(model.getImageResourcesFolder()) ||
+                StringUtils.isEmpty(model.getMaskFolder())) {
+            logger.error("Could not process set, the folders are not chosen");
             return;
         }
-        File file = jsonDatabaseFolder.get();
-        model.setJsonDatabaseFolder(file.getAbsolutePath());
-        spinner.setVisible(true);
-        Disposable disposable =  Observable.just(true)
+        logger.info("Process training");
+        model.setLoading(true);
+        Observable.just(true)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.newThread())
-                .subscribe((action) -> probabilityMapCreatorController.process(ColorReduce.BINS_PER_CHANNEL_256, model));
+                .subscribe((action) -> {
+                    probabilityMapCreatorController.process(ColorReduce.BINS_PER_CHANNEL_256, model);
+                    model.setLoading(false);
+                });
     }
 }

@@ -1,4 +1,4 @@
-package pl.olszak.michal.detector.core.operations.converter;
+package pl.olszak.michal.detector.core.converter;
 
 import org.opencv.core.Mat;
 import pl.olszak.michal.detector.model.file.AbstractImageFile;

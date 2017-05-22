@@ -6,10 +6,10 @@ import com.google.gson.GsonBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import pl.olszak.michal.detector.core.operations.controller.ProbabilityMapCreatorController;
-import pl.olszak.michal.detector.core.operations.converter.ConvertedContainerCreator;
-import pl.olszak.michal.detector.core.operations.converter.ImageConverter;
-import pl.olszak.michal.detector.core.operations.converter.RegularImageConverter;
+import pl.olszak.michal.detector.controller.ProbabilityMapCreatorController;
+import pl.olszak.michal.detector.core.converter.ConvertedContainerCreator;
+import pl.olszak.michal.detector.core.converter.ImageConverter;
+import pl.olszak.michal.detector.core.converter.RegularImageConverter;
 import pl.olszak.michal.detector.utils.FileOperations;
 
 /**
@@ -49,7 +49,7 @@ public class OperationsConfiguration {
 
     @Bean
     @Scope("prototype")
-    public ProbabilityMapCreatorController probabilityMapController(FileOperations fileOperations, Gson gson, ConvertedContainerCreator creator) {
-        return new ProbabilityMapCreatorController(fileOperations, gson, creator);
+    public ProbabilityMapCreatorController probabilityMapController(FileOperations fileOperations, ConvertedContainerCreator creator) {
+        return new ProbabilityMapCreatorController(fileOperations, creator);
     }
 }

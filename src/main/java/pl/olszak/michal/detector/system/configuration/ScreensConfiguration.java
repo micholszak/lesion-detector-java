@@ -37,7 +37,6 @@ public class ScreensConfiguration {
 
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
-    // TODO: 21.04.2017 wymienić stylesheet na coś fajnego
     private static final String STYLESHEET = "/main.css";
 
     private Stage stage;
@@ -93,13 +92,13 @@ public class ScreensConfiguration {
 
     @Bean
     @Scope("singleton")
-    DatabaseWindow databaseWindow() {
+    public DatabaseWindow databaseWindow() {
         return new DatabaseWindow(this);
     }
 
     @Bean
     @Scope("prototype")
-    MainWindow mainWindow() {
+    public MainWindow mainWindow() {
         return new MainWindow(this);
     }
 
