@@ -1,7 +1,11 @@
 package pl.olszak.michal.detector.fx;
 
+import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextArea;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 import org.slf4j.Logger;
@@ -17,10 +21,19 @@ public class MainWindow extends Presentation {
     private static final Logger logger = LoggerFactory.getLogger(MainWindow.class);
 
     @FXML
+    private JFXTabPane tabPane;
+
+    @FXML
+    private Tab databaseTab;
+
+    @FXML
+    private Tab segmentationTab;
+
+    @FXML
     private StackPane databaseView;
 
     @FXML
-    private StackPane emptyView;
+    private StackPane segmentationView;
 
     @FXML
     private JFXTextArea loggerOutput;
@@ -33,17 +46,25 @@ public class MainWindow extends Presentation {
     public void initialize() {
         logger.info("Initialize logger and pin it to Output");
         screensConfiguration.displayLogMessages(loggerOutput);
+
+        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if(newTab == databaseTab){
+                loadDatabaseCreation();
+            }else if(newTab == segmentationTab){
+                loadSegmentation();
+            }
+        });
+        loadDatabaseCreation();
     }
 
-    @FXML
-    public void loadDatabaseCreation() {
+    private void loadDatabaseCreation() {
         logger.info("Load databases view");
         screensConfiguration.loadDatabaseWindow(databaseView);
     }
 
-    public void loadSegmentation() {
+    private void loadSegmentation() {
         logger.info("Load segmentation view");
-        screensConfiguration.loadEmptyWindow(emptyView);
+        screensConfiguration.loadSegmentationWindow(segmentationView);
     }
 
 

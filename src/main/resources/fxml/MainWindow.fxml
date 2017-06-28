@@ -9,16 +9,16 @@
 <StackPane prefHeight="400.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="pl.olszak.michal.detector.fx.MainWindow">
     <children>
-        <JFXTabPane StackPane.alignment="TOP_CENTER">
+        <JFXTabPane fx:id="tabPane" StackPane.alignment="TOP_CENTER">
             <tabs>
-                <Tab onSelectionChanged="#loadDatabaseCreation" text="Create Databse">
+                <Tab fx:id="databaseTab" text="Create Databse">
                     <content>
                         <StackPane fx:id="databaseView" prefHeight="400" prefWidth="600.0"/>
                     </content>
                 </Tab>
-                <Tab onSelectionChanged="#loadSegmentation" text="Segmentation">
+                <Tab fx:id="segmentationTab" text="Segmentation">
                     <content>
-                        <StackPane fx:id="emptyView" prefHeight="400" prefWidth="600.0"/>
+                        <StackPane fx:id="segmentationView" prefHeight="400" prefWidth="600.0"/>
                     </content>
                 </Tab>
             </tabs>

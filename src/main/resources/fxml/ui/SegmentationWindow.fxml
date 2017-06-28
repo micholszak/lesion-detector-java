@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="pl.olszak.michal.detector.fx.scenes.segmentation.SegmentationWindow"
+           prefHeight="400.0" prefWidth="600.0">
+    <children>
+        <VBox alignment="CENTER" fillWidth="false" StackPane.alignment="CENTER">
+            <children>
+                <HBox spacing="15.0" VBox.vgrow="NEVER">
+                    <children>
+                        <JFXTextField fx:id="segmentationResourcesText" editable="false" labelFloat="true"
+                                      promptText="Segmentation resources folder"/>
+                        <JFXButton buttonType="RAISED" onAction="#onOpenSegmentationFolder" prefHeight="40" prefWidth="100"
+                                   styleClass="jfx-button-raised" text="OPEN"/>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </VBox.margin>
+                </HBox>
+                <HBox spacing="15.0" VBox.vgrow="NEVER">
+                    <children>
+                        <JFXTextField fx:id="segmentationDestinationText" editable="false" labelFloat="true"
+                                      promptText="Segmentation destination folder"/>
+                        <JFXButton buttonType="RAISED" onAction="#onChooseSegmentationDestination" prefHeight="40"
+                                   prefWidth="100" styleClass="jfx-button-raised" text="OPEN"/>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </VBox.margin>
+                </HBox>
+            </children>
+            <StackPane.margin>
+                <Insets bottom="200.0"/>
+            </StackPane.margin>
+        </VBox>
+    </children>
+
+</StackPane>

@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import pl.olszak.michal.detector.controller.ProbabilityMapCreatorController;
+import pl.olszak.michal.detector.controller.creator.MapCreator;
 import pl.olszak.michal.detector.fx.Presentation;
 import pl.olszak.michal.detector.system.configuration.ScreensConfiguration;
 import pl.olszak.michal.detector.utils.ColorReduce;
@@ -31,7 +31,7 @@ public class DatabaseWindow extends Presentation {
     private JFXTextField imageResourcesText;
 
     @Autowired
-    private ProbabilityMapCreatorController probabilityMapCreatorController;
+    private MapCreator probabilityMapCreator;
     @Autowired
     private DatabaseWindowContext model;
 
@@ -84,7 +84,7 @@ public class DatabaseWindow extends Presentation {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.newThread())
                 .subscribe((action) -> {
-                    probabilityMapCreatorController.process(ColorReduce.BINS_PER_CHANNEL_256, model);
+                    probabilityMapCreator.process(ColorReduce.BINS_PER_CHANNEL_256, model);
                     model.setLoading(false);
                 });
     }

@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import pl.olszak.michal.detector.fx.scenes.database.DatabaseWindowContext;
+import pl.olszak.michal.detector.fx.scenes.segmentation.SegmentationWindowContext;
 
 /**
  * @author molszak
@@ -16,5 +17,10 @@ public class ScreensContextConfiguration {
     @Bean
     DatabaseWindowContext databaseWindowContext(){
         return new DatabaseWindowContext();
+    }
+
+    @Bean
+    SegmentationWindowContext segmentationWindowContext() {
+        return new SegmentationWindowContext();
     }
 }

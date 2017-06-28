@@ -1,4 +1,4 @@
-package pl.olszak.michal.detector.controller;
+package pl.olszak.michal.detector.controller.creator;
 
 import io.reactivex.Flowable;
 import org.opencv.core.Mat;
@@ -29,9 +29,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author molszak
  *         created on 27.03.2017.
  */
-public class ProbabilityMapCreatorController {
+public class ProbabilityMapCreator implements MapCreator {
 
-    private final Logger logger = LoggerFactory.getLogger(ProbabilityMapCreatorController.class);
+    private final Logger logger = LoggerFactory.getLogger(ProbabilityMapCreator.class);
 
     private final FileOperations fileOperations;
     private final ConvertedContainerCreator creator;
@@ -40,11 +40,12 @@ public class ProbabilityMapCreatorController {
     @Autowired
     private MongoOperations mongo;
 
-    public ProbabilityMapCreatorController(FileOperations fileOperations, ConvertedContainerCreator creator) {
+    public ProbabilityMapCreator(FileOperations fileOperations, ConvertedContainerCreator creator) {
         this.fileOperations = fileOperations;
         this.creator = creator;
     }
 
+    @Override
     public void process(final ColorReduce colorReduce, final DatabaseWindowContext context) {
         logger.info("Started process");
         BayessianTable table = populateTable(colorReduce, context);
@@ -74,13 +75,12 @@ public class ProbabilityMapCreatorController {
         ConvertedFile maskFile = entry.getValue();
 
         logger.info(String.format("Processing %s", coloredFile.getImage().getFileName()));
-//        logger.info(Thread.currentThread().getName());
 
         Mat coloredMat = coloredFile.getConverted();
         Mat maskMat = maskFile.getConverted();
 
         if (coloredMat.size().equals(maskMat.size())) {
-
+            // TODO: 28.06.2017 przerzuć to do metody ?
             for (int row = 0; row < coloredMat.size().height; row++) {
                 for (int col = 0; col < coloredMat.size().width; col++) {
                     byte[] colors = new byte[coloredMat.channels()];

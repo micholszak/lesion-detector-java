@@ -19,8 +19,7 @@ public class RegularImageConverter implements ImageConverter {
         File file = img.getFile();
         ImageType type = img.getImageType();
 
-        Mat imageMat = Imgcodecs.imread(file.getPath(), type.getLoadType());
-        return imageMat;
+        return Imgcodecs.imread(file.getPath(), type.getLoadType());
     }
 
     @Override

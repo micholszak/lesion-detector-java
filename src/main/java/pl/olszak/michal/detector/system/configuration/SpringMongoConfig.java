@@ -8,7 +8,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
 /**
- * Created by Michal on 2017-05-20.
+ * @author Michal
+ * created on 2017-05-20.
  */
 @Configuration
 public class SpringMongoConfig {

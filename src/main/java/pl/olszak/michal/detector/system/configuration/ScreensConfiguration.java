@@ -19,6 +19,7 @@ import pl.olszak.michal.detector.fx.MainWindow;
 import pl.olszak.michal.detector.fx.Presentation;
 import pl.olszak.michal.detector.fx.scenes.database.DatabaseWindow;
 import pl.olszak.michal.detector.fx.scenes.EmptyTestWindow;
+import pl.olszak.michal.detector.fx.scenes.segmentation.SegmentationWindow;
 import pl.olszak.michal.detector.utils.logging.TextAreaAppender;
 
 import java.io.IOException;
@@ -90,20 +91,30 @@ public class ScreensConfiguration {
         setNode(getNode(mainWindow(), getClass().getResource("/fxml/MainWindow.fxml")));
     }
 
+    public void loadSegmentationWindow(Pane pane) {
+        pane.getChildren().setAll(getNode(segmentationWindow(), getClass().getResource("/fxml/ui/SegmentationWindow.fxml")));
+    }
+
     @Bean
     @Scope("singleton")
-    public DatabaseWindow databaseWindow() {
+    DatabaseWindow databaseWindow() {
         return new DatabaseWindow(this);
     }
 
     @Bean
-    @Scope("prototype")
-    public MainWindow mainWindow() {
+    @Scope("singleton")
+    MainWindow mainWindow() {
         return new MainWindow(this);
     }
 
     @Bean
-    @Scope("prototype")
+    @Scope("singleton")
+    SegmentationWindow segmentationWindow() {
+        return new SegmentationWindow(this);
+    }
+
+    @Bean
+    @Scope("singleton")
     EmptyTestWindow emptyTestWindow() {
         return new EmptyTestWindow(this);
     }
