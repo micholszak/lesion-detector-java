@@ -73,6 +73,7 @@ public class DatabaseWindow extends Presentation {
     @FXML
     public void onProcessTraining() {
         //todo move the multithreading logic to controller
+        // TODO: 28.06.2017 dorobić możliwość redukcji kanałów
         if (StringUtils.isEmpty(model.getImageResourcesFolder()) ||
                 StringUtils.isEmpty(model.getMaskFolder())) {
             logger.error("Could not process set, the folders are not chosen");
