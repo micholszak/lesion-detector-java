@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import pl.olszak.michal.detector.controller.creator.MapCreator;
 import pl.olszak.michal.detector.fx.Presentation;
+import pl.olszak.michal.detector.model.data.ColorProbability;
 import pl.olszak.michal.detector.system.configuration.ScreensConfiguration;
 import pl.olszak.michal.detector.utils.ColorReduce;
 import pl.olszak.michal.detector.utils.DialogUtils;
@@ -73,20 +74,21 @@ public class DatabaseWindow extends Presentation {
     @FXML
     public void onProcessTraining() {
         //todo move the multithreading logic to controller
-        // TODO: 28.06.2017 dorobić możliwość redukcji kanałów
         if (StringUtils.isEmpty(model.getImageResourcesFolder()) ||
                 StringUtils.isEmpty(model.getMaskFolder())) {
             logger.error("Could not process set, the folders are not chosen");
             return;
         }
         logger.info("Process training");
-        model.setLoading(true);
-        Observable.just(true)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(Schedulers.newThread())
-                .subscribe((action) -> {
-                    probabilityMapCreator.process(ColorReduce.BINS_PER_CHANNEL_256, model);
-                    model.setLoading(false);
-                });
+
+        // TODO: 29.06.2017 nie wiem czy to przerzucić czy nie, zależy czy będę musiał nauczyć kolekcję na nowym modelu ?
+        // pytanie czy nie łatwiej będzie wtedy usunąć bazę danych i tworzyć to wszystko na nowo, niż pakować wszystkiego do jednego kubła
+        // Wydaje mi się, że na razie nie muszę operować kolorami
+        Observable.fromArray(ColorReduce.values())
+                .subscribeOn(Schedulers.computation())
+                .observeOn(Schedulers.computation())
+                .subscribe((action) ->
+                        probabilityMapCreator.process(action, model)
+                );
     }
 }

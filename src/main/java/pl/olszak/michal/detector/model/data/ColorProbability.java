@@ -1,17 +1,22 @@
 package pl.olszak.michal.detector.model.data;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
- * Created by Michal on 2017-05-20.
+ * @author Michal
+ * created on 2017-05-20.
  */
+@CompoundIndexes({
+        @CompoundIndex(name = "colorInMode", def = "{'color': 1}")
+})
 @Document(collection = "probabilityMap")
 public class ColorProbability {
 
-    @Id
     private final Color color;
 
     private final int colorMode;

@@ -1,6 +1,7 @@
 package pl.olszak.michal.detector.controller.creator;
 
 import io.reactivex.Flowable;
+import io.reactivex.annotations.NonNull;
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,11 +49,10 @@ public class ProbabilityMapCreator implements MapCreator {
     @Override
     public void process(final ColorReduce colorReduce, final DatabaseWindowContext context) {
         logger.info("Started process");
-        BayessianTable table = populateTable(colorReduce, context);
-        createDatabase(table);
+        populateTable(colorReduce, context);
     }
 
-    private BayessianTable populateTable(final ColorReduce colorReduce, final DatabaseWindowContext context) {
+    private void populateTable(final ColorReduce colorReduce, final DatabaseWindowContext context) {
         BayessianTable table = new BayessianTable(colorReduce.getValue());
         ImageContainer colored = fileOperations.create(context.getImageResourcesFolder(), ImageType.COLORED);
         ImageContainer mask = fileOperations.create(context.getMaskFolder(), ImageType.GRAYSCALE_MASK);
@@ -67,14 +67,14 @@ public class ProbabilityMapCreator implements MapCreator {
                     addSample(colorReduce, table, coloredConverted, entry);
                 });
 
-        return table;
+        createDatabase(table, colorReduce);
     }
 
     private void addSample(ColorReduce colorReduce, BayessianTable table, ConvertedContainer coloredConverted, Map.Entry<String, ConvertedFile> entry) {
         ConvertedFile coloredFile = coloredConverted.getConvertedFiles().get(entry.getKey());
         ConvertedFile maskFile = entry.getValue();
 
-        logger.info(String.format("Processing %s", coloredFile.getImage().getFileName()));
+        logger.info(String.format("Processing %s, colorReduce %d", coloredFile.getImage().getFileName(), colorReduce.getValue()));
 
         Mat coloredMat = coloredFile.getConverted();
         Mat maskMat = maskFile.getConverted();
@@ -103,7 +103,7 @@ public class ProbabilityMapCreator implements MapCreator {
         }
     }
 
-    private void createDatabase(BayessianTable table) {
+    private void createDatabase(BayessianTable table, @NonNull final ColorReduce colorReduce) {
         logger.info("Creating database ...");
         final long totalCount = table.getTotalCount();
 
@@ -114,7 +114,7 @@ public class ProbabilityMapCreator implements MapCreator {
 
         Flowable.fromIterable(table.getNonLesionColors().entrySet())
                 .filter(entry -> {
-                    final Criteria criteria = new Criteria("color").is(entry.getKey());
+                    final Criteria criteria = new Criteria("color").is(entry.getKey()).and("colorMode").is(colorReduce.getValue());
                     return !mongo.exists(new Query(criteria), ColorProbability.class);
                 })
                 .forEach(entry ->
@@ -127,7 +127,12 @@ public class ProbabilityMapCreator implements MapCreator {
         final long nonLesion = table.getNonLesionColors().getOrDefault(color, 0L);
         final long lesion = value;
         final double lesionProbability = Operations.calculateProbability(lesion, nonLesion, totalCount);
-        ColorProbability colorProbability = new ColorProbability(color, table.getColorMode(), lesionProbability, 1 - lesionProbability, sampleSize.get());
+        ColorProbability colorProbability = new ColorProbability(
+                color,
+                table.getColorMode(),
+                lesionProbability,
+                1 - lesionProbability,
+                sampleSize.get());
         mongo.insert(colorProbability);
     }
 }
