@@ -1,6 +1,5 @@
 package pl.olszak.michal.detector.model.data;
 
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 

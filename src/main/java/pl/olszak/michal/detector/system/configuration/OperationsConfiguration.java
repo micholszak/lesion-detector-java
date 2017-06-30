@@ -6,12 +6,15 @@ import com.google.gson.GsonBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.mongodb.core.MongoOperations;
 import pl.olszak.michal.detector.controller.creator.ProbabilityMapCreator;
 import pl.olszak.michal.detector.controller.creator.MapCreator;
+import pl.olszak.michal.detector.controller.segmentation.SegmentationController;
 import pl.olszak.michal.detector.core.converter.ConvertedContainerCreator;
 import pl.olszak.michal.detector.core.converter.ImageConverter;
 import pl.olszak.michal.detector.core.converter.RegularImageConverter;
-import pl.olszak.michal.detector.utils.FileOperations;
+import pl.olszak.michal.detector.core.database.DatabaseFacade;
+import pl.olszak.michal.detector.utils.ContainerOperations;
 
 /**
  * @author molszak
@@ -22,8 +25,8 @@ public class OperationsConfiguration {
 
     @Bean
     @Scope("singleton")
-    public FileOperations fileOperations() {
-        return new FileOperations();
+    public ContainerOperations fileOperations() {
+        return new ContainerOperations();
     }
 
     @Bean
@@ -50,7 +53,19 @@ public class OperationsConfiguration {
 
     @Bean
     @Scope("prototype")
-    public MapCreator probabilityMapController(FileOperations fileOperations, ConvertedContainerCreator creator) {
-        return new ProbabilityMapCreator(fileOperations, creator);
+    public MapCreator probabilityMapController(ContainerOperations containerOperations, ConvertedContainerCreator creator) {
+        return new ProbabilityMapCreator(containerOperations, creator);
+    }
+
+    @Bean
+    @Scope("prototype")
+    public SegmentationController segmentationController(ContainerOperations containerOperations, ConvertedContainerCreator creator) {
+        return new SegmentationController(containerOperations, creator);
+    }
+
+    @Bean
+    @Scope("prototype")
+    public DatabaseFacade databaseFacade(MongoOperations operations) {
+        return new DatabaseFacade(operations);
     }
 }

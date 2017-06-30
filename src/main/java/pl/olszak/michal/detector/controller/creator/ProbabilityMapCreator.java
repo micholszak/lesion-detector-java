@@ -6,23 +6,21 @@ import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import pl.olszak.michal.detector.core.converter.ConvertedContainerCreator;
+import pl.olszak.michal.detector.core.database.DatabaseFacade;
 import pl.olszak.michal.detector.fx.scenes.database.DatabaseWindowContext;
 import pl.olszak.michal.detector.model.data.BayessianTable;
+import pl.olszak.michal.detector.model.data.Color;
 import pl.olszak.michal.detector.model.data.ColorProbability;
 import pl.olszak.michal.detector.model.file.ImageType;
 import pl.olszak.michal.detector.model.file.container.coverted.ConvertedContainer;
 import pl.olszak.michal.detector.model.file.container.coverted.ConvertedFile;
 import pl.olszak.michal.detector.model.file.container.image.ImageContainer;
 import pl.olszak.michal.detector.utils.ColorReduce;
-import pl.olszak.michal.detector.utils.FileOperations;
+import pl.olszak.michal.detector.utils.ContainerOperations;
 import pl.olszak.michal.detector.utils.Integers;
 import pl.olszak.michal.detector.utils.Operations;
 
-import java.awt.Color;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -34,15 +32,15 @@ public class ProbabilityMapCreator implements MapCreator {
 
     private final Logger logger = LoggerFactory.getLogger(ProbabilityMapCreator.class);
 
-    private final FileOperations fileOperations;
+    private final ContainerOperations containerOperations;
     private final ConvertedContainerCreator creator;
     private final AtomicInteger sampleSize = new AtomicInteger(0);
 
     @Autowired
-    private MongoOperations mongo;
+    private DatabaseFacade databaseFacade;
 
-    public ProbabilityMapCreator(FileOperations fileOperations, ConvertedContainerCreator creator) {
-        this.fileOperations = fileOperations;
+    public ProbabilityMapCreator(ContainerOperations containerOperations, ConvertedContainerCreator creator) {
+        this.containerOperations = containerOperations;
         this.creator = creator;
     }
 
@@ -54,8 +52,8 @@ public class ProbabilityMapCreator implements MapCreator {
 
     private void populateTable(final ColorReduce colorReduce, final DatabaseWindowContext context) {
         BayessianTable table = new BayessianTable(colorReduce.getValue());
-        ImageContainer colored = fileOperations.create(context.getImageResourcesFolder(), ImageType.COLORED);
-        ImageContainer mask = fileOperations.create(context.getMaskFolder(), ImageType.GRAYSCALE_MASK);
+        ImageContainer colored = containerOperations.create(context.getImageResourcesFolder(), ImageType.COLORED);
+        ImageContainer mask = containerOperations.create(context.getMaskFolder(), ImageType.GRAYSCALE_MASK);
 
         ConvertedContainer coloredConverted = creator.createColoredContainer(colored.getImages());
         ConvertedContainer maskConverted = creator.createThresholds(mask.getImages(), 128, true);
@@ -108,15 +106,13 @@ public class ProbabilityMapCreator implements MapCreator {
         final long totalCount = table.getTotalCount();
 
         Flowable.fromIterable(table.getLesionColors().entrySet())
+                .filter(entry -> !databaseFacade.probabilityExistst(entry.getKey(), colorReduce))
                 .forEach(entry ->
                         insertProbability(table, totalCount, entry.getKey(), entry.getValue())
                 );
 
         Flowable.fromIterable(table.getNonLesionColors().entrySet())
-                .filter(entry -> {
-                    final Criteria criteria = new Criteria("color").is(entry.getKey()).and("colorMode").is(colorReduce.getValue());
-                    return !mongo.exists(new Query(criteria), ColorProbability.class);
-                })
+                .filter(entry -> !databaseFacade.probabilityExistst(entry.getKey(), colorReduce))
                 .forEach(entry ->
                         insertProbability(table, totalCount, entry.getKey(), entry.getValue())
                 );
@@ -133,6 +129,6 @@ public class ProbabilityMapCreator implements MapCreator {
                 lesionProbability,
                 1 - lesionProbability,
                 sampleSize.get());
-        mongo.insert(colorProbability);
+        databaseFacade.insert(colorProbability);
     }
 }

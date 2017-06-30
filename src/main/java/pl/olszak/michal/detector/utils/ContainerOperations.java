@@ -13,13 +13,13 @@ import java.util.Iterator;
  * @author molszak
  *         created on 23.03.2017.
  */
-public final class FileOperations {
+public final class ContainerOperations {
 
-    private final Logger logger = LoggerFactory.getLogger(FileOperations.class);
+    private final Logger logger = LoggerFactory.getLogger(ContainerOperations.class);
 
     private final String[] ACCEPTABLE_EXTENSIONS;
 
-    public FileOperations() {
+    public ContainerOperations() {
         ACCEPTABLE_EXTENSIONS = new String[]{
                 "bmp",
                 "png",

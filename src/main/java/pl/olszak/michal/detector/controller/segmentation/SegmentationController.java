@@ -1,10 +1,31 @@
 package pl.olszak.michal.detector.controller.segmentation;
 
+import io.reactivex.Flowable;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
+import pl.olszak.michal.detector.core.converter.ConvertedContainerCreator;
+import pl.olszak.michal.detector.core.database.DatabaseFacade;
+import pl.olszak.michal.detector.exception.FolderCreationException;
+import pl.olszak.michal.detector.fx.scenes.segmentation.SegmentationWindowContext;
+import pl.olszak.michal.detector.model.data.Color;
 import pl.olszak.michal.detector.model.data.ColorProbability;
+import pl.olszak.michal.detector.model.file.ImageType;
+import pl.olszak.michal.detector.model.file.container.coverted.ConvertedContainer;
+import pl.olszak.michal.detector.model.file.container.coverted.ConvertedFile;
+import pl.olszak.michal.detector.model.file.container.image.ImageContainer;
+import pl.olszak.michal.detector.utils.ColorReduce;
+import pl.olszak.michal.detector.utils.ContainerOperations;
+import pl.olszak.michal.detector.utils.FileOperationsUtils;
+import pl.olszak.michal.detector.utils.Integers;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author molszak
@@ -14,58 +35,77 @@ public class SegmentationController {
 
     private final Logger logger = LoggerFactory.getLogger(SegmentationController.class);
 
-    @Autowired
-    private MongoOperations mongo;
+    private final ContainerOperations operations;
+    private final ConvertedContainerCreator creator;
 
-    public void executeTest(){
-        // TODO: 28.06.2017 dorobić w domu, nie do końca wiem co chcę tu osiągnąć
-       if(mongo.collectionExists(ColorProbability.class)){
-           // TODO: 28.06.2017 zbinaryzować obrazy do testów (potrzebujesz contextu)
-           // TODO: 28.06.2017 zredukować kanały
-           // TODO: 28.06.2017 kolor chyba nie może być id, co jeżeli w zredukowanych kanałach pojawi się ten sam kolor
-           // TODO: 28.06.2017 wyszukać koloru w bazie danych, porównać kolor i dodać wynik, pytanie czy opłaca się cachować kolekcje kolorów z bazy danych czy wyciągać jak potrzebuję kolor
-           // TODO: 28.06.2017 zapisać zesgmentowany obraz, dodać różne możliwości segmentacji (różne metody)
-       }
+    private static final int MAX_VALUE = 256;
+    private static final String EXTENSION = ".bmp";
+
+    @Autowired
+    private DatabaseFacade databaseFacade;
+
+    public SegmentationController(ContainerOperations operations, ConvertedContainerCreator creator) {
+        this.operations = operations;
+        this.creator = creator;
     }
 
-    /*
-    public void executeTest(BayessianProbabilityMap map) {
-        if (!map.getLesionProbability().isEmpty()) {
-            ImageContainer coloredImageContainer = operations.createContainer(Utils.getTestFolder(), ImageTypes.COLORED);
-            CollectionBinarizer collectionBinarizer = new RegularCollectionBinarizer(coloredImageContainer, ImageTypes.COLORED);
-            Container coloredBinarizedContainer = collectionBinarizer.binarizeCollection();
+    public void createSegmentedImages(final ColorReduce colorReduce, final SegmentationWindowContext context) {
+        if (databaseFacade.probabilityDatabaseExists()) {
+            try {
+                String folderPath = FileOperationsUtils.createDestinationFolder(colorReduce, context.getSegmentationDestinationFolder());
+                createSegmenattionResults(folderPath, context.getSegmentationResourcesFolder(), colorReduce);
+            } catch (FolderCreationException e) {
+                logger.error(e.getMessage());
+            }
+        }
+    }
 
-            final Map<Color, Double> lesionMap = map.getLesionProbability();
+    private void createSegmenattionResults(String destinationPath, String resourcesPath, ColorReduce colorReduce) {
+        ImageContainer segmentationSources = operations.create(resourcesPath, ImageType.COLORED);
+        ConvertedContainer sources = creator.createColoredContainer(segmentationSources.getImages());
+        final Map<Color, Double> cacheMap = new HashMap<>();
 
-            final Map<String, byte[]> coloredContainer = ((BinarizedContainer) coloredBinarizedContainer).getBinarizedContainer();
-            coloredContainer.entrySet().forEach(entry -> {
-                byte[] coloredBytes = entry.getValue();
-                byte[] bytes = new byte[coloredBytes.length / 3];
+        Flowable.fromIterable(sources.getConvertedFiles().entrySet())
+                .forEach(entry -> processImage(entry.getKey(), entry.getValue(), destinationPath, colorReduce, cacheMap));
+    }
 
-                for (int i = 0; i < bytes.length; i++) {
-                    int b = IntUtils.getUnsignedInt(coloredBytes[i * 3]);
-                    int g = IntUtils.getUnsignedInt(coloredBytes[i * 3 + 1]);
-                    int r = IntUtils.getUnsignedInt(coloredBytes[i * 3 + 2]);
+    private void processImage(String filename, ConvertedFile convertedFile, String destinationPath, ColorReduce colorReduce, Map<Color, Double> cacheMap) {
+        logger.info(String.format("Segmentation started on: %s, with colorReduce %d", filename, colorReduce.getValue()));
+        Mat colored = convertedFile.getConverted();
+        byte segmentedBytes[] = new byte[(int) (colored.size().height * colored.size().width * CvType.CV_8S)];
+        // TODO: 30.06.2017 cache probabilityMap with color
 
-                    ColorReduce reduce = ColorReduce.of(map.getBins());
-                    if (reduce != ColorReduce.BINS_PER_CHANNEL_FULL) {
-                        b = IntUtils.reduceChannels(b, reduce);
-                        g = IntUtils.reduceChannels(g, reduce);
-                        r = IntUtils.reduceChannels(r, reduce);
-                    }
+        for (int row = 0; row < colored.height(); row++) {
+            for (int col = 0; col < colored.width(); col++) {
+                final int index = row * colored.width() + col;
+                byte[] colors = new byte[colored.channels()];
+                colored.get(row, col, colors);
 
-                    Color color = new Color(r, g, b);
-                    bytes[i] = (byte) Math.round((lesionMap.containsKey(color) ? lesionMap.get(color) : 0) * MAX_VALUE);
-                }
+                int b = colorReduce.reduceChannels(Integers.unsignedInt(colors[0]));
+                int g = colorReduce.reduceChannels(Integers.unsignedInt(colors[1]));
+                int r = colorReduce.reduceChannels(Integers.unsignedInt(colors[2]));
 
-                Mat mat = new Mat(512, 768, CvType.CV_8U);
-                mat.put(0, 0, bytes);
-
-                File file = new File(Utils.getResultsFolder(), entry.getKey() + BMP_EXTENSION);
-                Highgui.imwrite(file.getAbsolutePath(), mat);
-            });
+                Color color = new Color(r, g, b);
+                cacheMap(cacheMap, color, colorReduce);
+                segmentedBytes[index] = (byte) (cacheMap.get(color) * MAX_VALUE);
+            }
         }
 
+        Mat mat = new Mat(colored.size(), CvType.CV_8U);
+        mat.put(0, 0, segmentedBytes);
+
+        File file = new File(destinationPath, filename + EXTENSION);
+        Imgcodecs.imwrite(file.getAbsolutePath(), mat);
     }
-     */
+
+    private void cacheMap(Map<Color, Double> cacheMap, Color color, ColorReduce colorReduce){
+        if(!cacheMap.containsKey(color)){
+            Optional<ColorProbability> optional = databaseFacade.retrieve(color, colorReduce);
+            if(optional.isPresent()){
+                cacheMap.put(color, optional.get().getLesionProbability());
+            }else{
+                cacheMap.put(color, 0.0);
+            }
+        }
+    }
 }
