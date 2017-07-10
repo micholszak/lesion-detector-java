@@ -84,11 +84,10 @@ public class DatabaseWindow extends Presentation {
         // TODO: 29.06.2017 nie wiem czy to przerzucić czy nie, zależy czy będę musiał nauczyć kolekcję na nowym modelu ?
         // pytanie czy nie łatwiej będzie wtedy usunąć bazę danych i tworzyć to wszystko na nowo, niż pakować wszystkiego do jednego kubła
         // Wydaje mi się, że na razie nie muszę operować kolorami
-        Observable.fromArray(ColorReduce.values())
+        // TODO: 10.07.2017 trzeba to przerzucić do osobnego boxa, nie można tego robić na kilku wątkach. mapa tworzy się ogromna
+
+        Observable.just(ColorReduce.BINS_PER_CHANNEL_128)
                 .subscribeOn(Schedulers.computation())
-                .observeOn(Schedulers.computation())
-                .subscribe((action) ->
-                        probabilityMapCreator.process(action, model)
-                );
+                .subscribe(action -> probabilityMapCreator.process(action, model));
     }
 }

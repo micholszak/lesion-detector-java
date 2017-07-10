@@ -78,7 +78,6 @@ public class ProbabilityMapCreator implements MapCreator {
         Mat maskMat = maskFile.getConverted();
 
         if (coloredMat.size().equals(maskMat.size())) {
-            // TODO: 28.06.2017 przerzuć to do metody ?
             for (int row = 0; row < coloredMat.size().height; row++) {
                 for (int col = 0; col < coloredMat.size().width; col++) {
                     byte[] colors = new byte[coloredMat.channels()];
@@ -93,7 +92,8 @@ public class ProbabilityMapCreator implements MapCreator {
 
                     if (Integers.unsignedInt(maskValue[0]) == 1) {
                         table.addLesionColor(new Color(r, g, b));
-                    } else {
+                    }
+                    else {
                         table.addNonLesionColor(new Color(r, g, b));
                     }
                 }
@@ -108,20 +108,20 @@ public class ProbabilityMapCreator implements MapCreator {
         Flowable.fromIterable(table.getLesionColors().entrySet())
                 .filter(entry -> !databaseFacade.probabilityExistst(entry.getKey(), colorReduce))
                 .forEach(entry ->
-                        insertProbability(table, totalCount, entry.getKey(), entry.getValue())
+                        insertProbability(table, totalCount, entry.getKey(), entry.getValue(), false)
                 );
 
         Flowable.fromIterable(table.getNonLesionColors().entrySet())
                 .filter(entry -> !databaseFacade.probabilityExistst(entry.getKey(), colorReduce))
                 .forEach(entry ->
-                        insertProbability(table, totalCount, entry.getKey(), entry.getValue())
+                        insertProbability(table, totalCount, entry.getKey(), entry.getValue(), true)
                 );
         logger.info("Database creation finished");
     }
 
-    private void insertProbability(BayessianTable table, long totalCount, Color color, Long value) {
-        final long nonLesion = table.getNonLesionColors().getOrDefault(color, 0L);
-        final long lesion = value;
+    private void insertProbability(BayessianTable table, long totalCount, Color color, Long value, boolean invert) {
+        final long nonLesion = invert ? value : table.getNonLesionColors().getOrDefault(color, 0L);
+        final long lesion = invert ? table.getLesionColors().getOrDefault(color, 0L) : value;
         final double lesionProbability = Operations.calculateProbability(lesion, nonLesion, totalCount);
         ColorProbability colorProbability = new ColorProbability(
                 color,
