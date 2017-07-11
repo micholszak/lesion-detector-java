@@ -5,7 +5,6 @@ import io.reactivex.annotations.NonNull;
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import pl.olszak.michal.detector.core.converter.ConvertedContainerCreator;
 import pl.olszak.michal.detector.core.database.DatabaseFacade;
 import pl.olszak.michal.detector.fx.scenes.database.DatabaseWindowContext;
@@ -33,15 +32,15 @@ public class ProbabilityMapCreator implements MapCreator {
     private final Logger logger = LoggerFactory.getLogger(ProbabilityMapCreator.class);
 
     private final ContainerOperations containerOperations;
+    private final DatabaseFacade databaseFacade;
     private final ConvertedContainerCreator creator;
+
     private final AtomicInteger sampleSize = new AtomicInteger(0);
 
-    @Autowired
-    private DatabaseFacade databaseFacade;
-
-    public ProbabilityMapCreator(ContainerOperations containerOperations, ConvertedContainerCreator creator) {
+    public ProbabilityMapCreator(ContainerOperations containerOperations, ConvertedContainerCreator creator, DatabaseFacade databaseFacade) {
         this.containerOperations = containerOperations;
         this.creator = creator;
+        this.databaseFacade = databaseFacade;
     }
 
     @Override
@@ -92,8 +91,7 @@ public class ProbabilityMapCreator implements MapCreator {
 
                     if (Integers.unsignedInt(maskValue[0]) == 1) {
                         table.addLesionColor(new Color(r, g, b));
-                    }
-                    else {
+                    } else {
                         table.addNonLesionColor(new Color(r, g, b));
                     }
                 }

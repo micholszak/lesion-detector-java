@@ -1,9 +1,10 @@
 .root {
     -fx-font-family: "Roboto";
-    dark-primary-color: #F57C00;
+    error-color: #D34336;
+    dark-primary-color: #E86A00;
     primary-color: #FF9800;
-    light-primary-color: #FFE0B2;
-    accent-color: #bdc3c7;
+    light-primary-color: #FFCB00;
+    accent-color: #FF4F00;
     primary-text-color: #212121;
     secondary-text-color: #727272;
     text-icons: #212121;
@@ -45,7 +46,7 @@
     -fx-background-insets: 1,1,1,1;
     -fx-border-width: 3;
     -fx-padding: 3;
-    -fx-text-fill: text-icons;
+    -fx-text-fill: white;
     -fx-font-family: "Roboto";
     -fx-font-size: 14;
 }
@@ -62,13 +63,25 @@
     -fx-max-width: 300.0;
     -fx-font-family: "Roboto";
     -fx-pref-width: 300.0;
-    -jfx-focus-color: primary-text-color;
-    -jfx-unfocus-color: secondary-text-color;
+    -jfx-color: primary-text-color;
+}
+
+.jfx-text-field:error {
+    -jfx-focus-color: error-color;
+    -jfx-unfocus-color: error-color;
+}
+
+.error-label {
+    -fx-text-fill: error-color;
+    -fx-font-size: 0.75em;
+}
+
+.viewport {
+    -fx-border-width: 1;
+    -fx-border-color: light-primary-color;
 }
 
 .jfx-text-area .viewport {
-    -fx-border-width: 2;
-    -fx-border-color: dark-primary-color;
     -fx-background-color: white;
     -fx-font-family: "Roboto";
 }
@@ -109,11 +122,16 @@
 }
 
 .scroll-bar > .increment-button > .increment-arrow {
-    -fx-shape: "M298 426h428l-214 214z";
+    -fx-shape: "M7,10L12,15L17,10H7Z";
 }
 
 .scroll-bar > .decrement-button > .decrement-arrow {
-    -fx-shape: "M298 598l214-214 214 214h-428z";
+    -fx-shape: "M7,15L12,10L17,15H7Z";
+}
+
+.error-icon {
+    -fx-fill: error-color;
+    -fx-font-size: 1.0em;
 }
 
 /**

@@ -1,4 +1,4 @@
-package pl.olszak.michal.detector.utils.logging;
+package pl.olszak.michal.detector.utils;
 
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;

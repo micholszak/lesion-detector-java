@@ -6,7 +6,9 @@ import io.reactivex.schedulers.Schedulers;
 import javafx.fxml.FXML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import pl.olszak.michal.detector.controller.segmentation.SegmentationController;
 import pl.olszak.michal.detector.fx.Presentation;
@@ -21,6 +23,8 @@ import java.util.Optional;
  * @author molszak
  *         created on 28.06.2017.
  */
+@Controller
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SegmentationWindow extends Presentation {
 
     private final Logger logger = LoggerFactory.getLogger(SegmentationWindow.class);
@@ -30,13 +34,13 @@ public class SegmentationWindow extends Presentation {
     @FXML
     private JFXTextField segmentationDestinationText;
 
-    @Autowired
-    private SegmentationWindowContext context;
-    @Autowired
-    private SegmentationController segmentationController;
+    private final SegmentationWindowContext context;
+    private final SegmentationController segmentationController;
 
-    public SegmentationWindow(ScreensConfiguration screensConfiguration) {
+    public SegmentationWindow(ScreensConfiguration screensConfiguration, SegmentationWindowContext context, SegmentationController segmentationController) {
         super(screensConfiguration);
+        this.context = context;
+        this.segmentationController = segmentationController;
     }
 
     @FXML

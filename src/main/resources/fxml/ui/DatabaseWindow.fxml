@@ -1,48 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.*?>
-<StackPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111"
-           xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="pl.olszak.michal.detector.fx.scenes.database.DatabaseWindow">
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.olszak.michal.detector.fx.scenes.database.DatabaseWindow">
     <children>
-        <VBox alignment="CENTER" fillWidth="false" StackPane.alignment="CENTER">
+        <VBox fillWidth="false" StackPane.alignment="TOP_LEFT">
             <children>
-                <HBox spacing="15.0" VBox.vgrow="NEVER">
+                <HBox nodeOrientation="LEFT_TO_RIGHT" spacing="15.0" VBox.vgrow="NEVER">
                     <children>
-                        <JFXTextField fx:id="maskResourcesText" editable="false" labelFloat="true"
-                                      promptText="Mask resources folder"/>
-                        <JFXButton buttonType="RAISED" onAction="#onOpenMaskFolder" prefHeight="40" prefWidth="100"
-                                   styleClass="jfx-button-raised" text="OPEN"/>
+                        <JFXTextField fx:id="maskResourcesText" editable="false" labelFloat="true" promptText="Mask resources folder">
+                        </JFXTextField>
+                        <JFXButton buttonType="RAISED" onAction="#onOpenMaskFolder" prefHeight="40" prefWidth="100" styleClass="jfx-button-raised" text="OPEN" />
                     </children>
                     <VBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                        <Insets bottom="5.0" top="5.0" />
                     </VBox.margin>
                 </HBox>
                 <HBox spacing="15.0" VBox.vgrow="NEVER">
                     <children>
-                        <JFXTextField fx:id="imageResourcesText" editable="false" labelFloat="true"
-                                      promptText="Train resources folder"/>
-                        <JFXButton buttonType="RAISED" onAction="#onOpenTrainResourcesFolder" prefHeight="40"
-                                   prefWidth="100" styleClass="jfx-button-raised" text="OPEN"/>
+                        <JFXTextField fx:id="imageResourcesText" editable="false" labelFloat="true" promptText="Train resources folder" />
+                        <JFXButton buttonType="RAISED" onAction="#onOpenTrainResourcesFolder" prefHeight="40" prefWidth="100" styleClass="jfx-button-raised" text="OPEN" />
                     </children>
                     <VBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                        <Insets bottom="5.0" top="5.0" />
                     </VBox.margin>
                 </HBox>
+                <Label text="Color Reduction">
+                    <VBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                    </VBox.margin>
+                </Label>
+                <JFXComboBox fx:id="imageReductionCombo" prefWidth="200.0" promptText="ColorReduction">
+                    <VBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                    </VBox.margin>
+                </JFXComboBox>
             </children>
             <StackPane.margin>
-                <Insets bottom="200.0"/>
+                <Insets bottom="200.0" left="32.0" top="16.0" />
             </StackPane.margin>
         </VBox>
-        <VBox spacing="15" alignment="BOTTOM_CENTER" prefHeight="200.0" StackPane.alignment="BOTTOM_CENTER">
+        <VBox prefHeight="200.0" spacing="15" StackPane.alignment="BOTTOM_CENTER">
             <children>
-                <JFXButton buttonType="RAISED" prefHeight="40.0" prefWidth="100.0" styleClass="jfx-button-raised"
-                           text="PROCESS" onAction="#onProcessTraining"/>
+                <JFXButton buttonType="RAISED" onAction="#onProcessTraining" prefHeight="40.0" prefWidth="200.0" styleClass="jfx-button-raised" text="PROCESS" />
             </children>
             <StackPane.margin>
-                <Insets bottom="100.0" top="200.0"/>
+                <Insets bottom="34.0" left="32.0" top="326.0" />
             </StackPane.margin>
         </VBox>
     </children>

@@ -2,7 +2,6 @@ package pl.olszak.michal.detector.system.configuration;
 
 import com.jfoenix.controls.JFXDecorator;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
@@ -11,20 +10,11 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
-import pl.olszak.michal.detector.fx.MainWindow;
-import pl.olszak.michal.detector.fx.Presentation;
-import pl.olszak.michal.detector.fx.scenes.database.DatabaseWindow;
-import pl.olszak.michal.detector.fx.scenes.EmptyTestWindow;
-import pl.olszak.michal.detector.fx.scenes.segmentation.SegmentationWindow;
-import pl.olszak.michal.detector.utils.logging.TextAreaAppender;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
+import pl.olszak.michal.detector.system.ViewService;
+import pl.olszak.michal.detector.utils.TextAreaAppender;
 
 /**
  * @author molszak
@@ -43,6 +33,9 @@ public class ScreensConfiguration {
     private Stage stage;
     private StackPane root;
     private TextAreaAppender appender;
+
+    @Autowired
+    private ViewService viewService;
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -80,58 +73,26 @@ public class ScreensConfiguration {
     }
 
     public void loadDatabaseWindow(Pane pane) {
-        pane.getChildren().setAll(getNode(databaseWindow(), getClass().getResource("/fxml/ui/DatabaseWindow.fxml")));
+        pane.getChildren().setAll(viewService.getNode("/fxml/ui/DatabaseWindow.fxml"));
     }
 
     public void loadEmptyWindow(Pane pane) {
-        pane.getChildren().setAll(getNode(emptyTestWindow(), getClass().getResource("/fxml/ui/EmptyTestWindow.fxml")));
+        pane.getChildren().setAll(viewService.getNode("/fxml/ui/EmptyTestWindow.fxml"));
+    }
+
+    public void loadRocWindow(Pane pane) {
+        pane.getChildren().setAll(viewService.getNode("/fxml/ui/RocWindow.fxml"));
     }
 
     public void loadMainWindow() {
-        setNode(getNode(mainWindow(), getClass().getResource("/fxml/MainWindow.fxml")));
+        setNode(viewService.getNode("/fxml/MainWindow.fxml"));
     }
 
     public void loadSegmentationWindow(Pane pane) {
-        pane.getChildren().setAll(getNode(segmentationWindow(), getClass().getResource("/fxml/ui/SegmentationWindow.fxml")));
-    }
-
-    @Bean
-    @Scope("singleton")
-    DatabaseWindow databaseWindow() {
-        return new DatabaseWindow(this);
-    }
-
-    @Bean
-    @Scope("singleton")
-    MainWindow mainWindow() {
-        return new MainWindow(this);
-    }
-
-    @Bean
-    @Scope("singleton")
-    SegmentationWindow segmentationWindow() {
-        return new SegmentationWindow(this);
-    }
-
-    @Bean
-    @Scope("singleton")
-    EmptyTestWindow emptyTestWindow() {
-        return new EmptyTestWindow(this);
+        pane.getChildren().setAll(viewService.getNode("/fxml/ui/SegmentationWindow.fxml"));
     }
 
     private void setNode(Node node) {
         root.getChildren().setAll(node);
-    }
-
-    private Node getNode(final Presentation presentation, URL location) {
-        FXMLLoader loader = new FXMLLoader(location, ResourceBundle.getBundle("lang_pl"));
-        loader.setControllerFactory(param -> presentation);
-
-        try {
-            return (Node) loader.load();
-        } catch (IOException e) {
-            logger.error("Error retrieving node", e);
-            return null;
-        }
     }
 }

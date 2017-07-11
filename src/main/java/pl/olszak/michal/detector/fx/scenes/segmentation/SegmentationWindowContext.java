@@ -1,12 +1,10 @@
 package pl.olszak.michal.detector.fx.scenes.segmentation;
 
-import java.util.Observable;
-
 /**
  * @author molszak
  *         created on 28.06.2017.
  */
-public class SegmentationWindowContext extends Observable {
+public class SegmentationWindowContext{
 
     private String segmentationResourcesFolder;
     private String segmentationDestinationFolder;
@@ -29,8 +27,6 @@ public class SegmentationWindowContext extends Observable {
             return;
         }
         this.segmentationResourcesFolder = segmentationResourcesFolder;
-        setChanged();
-        notifyObservers();
     }
 
     public void setSegmentationDestinationFolder(String segmentationDestinationFolder) {
@@ -38,7 +34,5 @@ public class SegmentationWindowContext extends Observable {
             return;
         }
         this.segmentationDestinationFolder = segmentationDestinationFolder;
-        setChanged();
-        notifyObservers();
     }
 }

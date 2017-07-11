@@ -1,17 +1,22 @@
 package pl.olszak.michal.detector.fx.scenes.database;
 
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import pl.olszak.michal.detector.controller.creator.MapCreator;
 import pl.olszak.michal.detector.fx.Presentation;
-import pl.olszak.michal.detector.model.data.ColorProbability;
 import pl.olszak.michal.detector.system.configuration.ScreensConfiguration;
+import pl.olszak.michal.detector.utils.CallbackProvider;
 import pl.olszak.michal.detector.utils.ColorReduce;
 import pl.olszak.michal.detector.utils.DialogUtils;
 
@@ -22,6 +27,8 @@ import java.util.Optional;
  * @author molszak
  *         created on 21.04.2017.
  */
+@Controller
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class DatabaseWindow extends Presentation {
 
     private final Logger logger = LoggerFactory.getLogger(DatabaseWindow.class);
@@ -30,21 +37,34 @@ public class DatabaseWindow extends Presentation {
     private JFXTextField maskResourcesText;
     @FXML
     private JFXTextField imageResourcesText;
+    @FXML
+    private JFXComboBox<ColorReduce> imageReductionCombo;
 
-    @Autowired
-    private MapCreator probabilityMapCreator;
-    @Autowired
-    private DatabaseWindowContext model;
+    private final MapCreator probabilityMapCreator;
+    private final DatabaseWindowContext model;
+    private final CallbackProvider callbackProvider;
 
-    public DatabaseWindow(ScreensConfiguration screensConfiguration) {
+    public DatabaseWindow(ScreensConfiguration screensConfiguration, MapCreator probabilityMapCreator, DatabaseWindowContext model, CallbackProvider callbackProvider) {
         super(screensConfiguration);
+        this.probabilityMapCreator = probabilityMapCreator;
+        this.model = model;
+        this.callbackProvider = callbackProvider;
     }
-
 
     @FXML
     public void initialize() {
         maskResourcesText.setText(model.getMaskFolder());
         imageResourcesText.setText(model.getImageResourcesFolder());
+
+        ObservableList<ColorReduce> reduction = FXCollections.observableArrayList(ColorReduce.values());
+        imageReductionCombo.setItems(reduction);
+        imageReductionCombo.setCellFactory(callbackProvider.provideComboBoxCallback());
+        imageReductionCombo.setValue(model.getColorReduce());
+        imageReductionCombo.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (oldValue != newValue) {
+                model.setColorReduce(newValue);
+            }
+        });
     }
 
 
@@ -71,22 +91,18 @@ public class DatabaseWindow extends Presentation {
         }
     }
 
+    /**
+     * Niestety nie jest to idiotoodporne, ale nie chce mi się robić dodatkowego ładowania
+     */
     @FXML
     public void onProcessTraining() {
-        //todo move the multithreading logic to controller
         if (StringUtils.isEmpty(model.getImageResourcesFolder()) ||
                 StringUtils.isEmpty(model.getMaskFolder())) {
             logger.error("Could not process set, the folders are not chosen");
             return;
         }
         logger.info("Process training");
-
-        // TODO: 29.06.2017 nie wiem czy to przerzucić czy nie, zależy czy będę musiał nauczyć kolekcję na nowym modelu ?
-        // pytanie czy nie łatwiej będzie wtedy usunąć bazę danych i tworzyć to wszystko na nowo, niż pakować wszystkiego do jednego kubła
-        // Wydaje mi się, że na razie nie muszę operować kolorami
-        // TODO: 10.07.2017 trzeba to przerzucić do osobnego boxa, nie można tego robić na kilku wątkach. mapa tworzy się ogromna
-
-        Observable.just(ColorReduce.BINS_PER_CHANNEL_128)
+        Observable.just(model.getColorReduce())
                 .subscribeOn(Schedulers.computation())
                 .subscribe(action -> probabilityMapCreator.process(action, model));
     }

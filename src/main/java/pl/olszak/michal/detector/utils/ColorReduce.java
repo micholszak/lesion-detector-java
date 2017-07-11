@@ -1,5 +1,7 @@
 package pl.olszak.michal.detector.utils;
 
+import java.util.Locale;
+
 /**
  * @author molszak
  *         created on 22.03.2017.
@@ -44,4 +46,8 @@ public enum ColorReduce {
     }
 
 
+    @Override
+    public String toString() {
+        return String.format(Locale.getDefault(), "Reduction %d", getValue());
+    }
 }

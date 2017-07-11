@@ -37,16 +37,16 @@ public class SegmentationController {
 
     private final ContainerOperations operations;
     private final ConvertedContainerCreator creator;
+    private final DatabaseFacade databaseFacade;
 
     private static final int MAX_VALUE = 256;
+
     private static final String EXTENSION = ".bmp";
 
-    @Autowired
-    private DatabaseFacade databaseFacade;
-
-    public SegmentationController(ContainerOperations operations, ConvertedContainerCreator creator) {
+    public SegmentationController(ContainerOperations operations, ConvertedContainerCreator creator, DatabaseFacade databaseFacade) {
         this.operations = operations;
         this.creator = creator;
+        this.databaseFacade = databaseFacade;
     }
 
     public void createSegmentedImages(final ColorReduce colorReduce, final SegmentationWindowContext context) {
@@ -73,7 +73,6 @@ public class SegmentationController {
         logger.info(String.format("Segmentation started on: %s, with colorReduce %d", filename, colorReduce.getValue()));
         Mat colored = convertedFile.getConverted();
         byte segmentedBytes[] = new byte[(int) (colored.size().height * colored.size().width * CvType.CV_8S)];
-        // TODO: 30.06.2017 cache probabilityMap with color
 
         for (int row = 0; row < colored.height(); row++) {
             for (int col = 0; col < colored.width(); col++) {
@@ -98,12 +97,12 @@ public class SegmentationController {
         Imgcodecs.imwrite(file.getAbsolutePath(), mat);
     }
 
-    private void cacheMap(Map<Color, Double> cacheMap, Color color, ColorReduce colorReduce){
-        if(!cacheMap.containsKey(color)){
+    private void cacheMap(Map<Color, Double> cacheMap, Color color, ColorReduce colorReduce) {
+        if (!cacheMap.containsKey(color)) {
             Optional<ColorProbability> optional = databaseFacade.retrieve(color, colorReduce);
-            if(optional.isPresent()){
+            if (optional.isPresent()) {
                 cacheMap.put(color, optional.get().getLesionProbability());
-            }else{
+            } else {
                 cacheMap.put(color, 0.0);
             }
         }

@@ -1,20 +1,21 @@
 package pl.olszak.michal.detector.fx.scenes.database;
 
-import java.util.Observable;
+import pl.olszak.michal.detector.utils.ColorReduce;
 
 /**
  * @author molszak
  *         created on 08.05.2017.
  */
-public class DatabaseWindowContext extends Observable {
+public class DatabaseWindowContext{
 
     private String maskFolder;
     private String resourcesFolder;
-    private boolean loading = false;
+    private ColorReduce colorReduce;
 
     public DatabaseWindowContext() {
         maskFolder = "";
         resourcesFolder = "";
+        colorReduce = ColorReduce.BINS_PER_CHANNEL_4;
     }
 
     public String getMaskFolder() {
@@ -25,17 +26,16 @@ public class DatabaseWindowContext extends Observable {
         return resourcesFolder;
     }
 
-    public boolean isLoading() {
-        return loading;
+    public ColorReduce getColorReduce() {
+        return colorReduce;
     }
+
 
     public void setMaskFolder(String maskFolder) {
         if (maskFolder == null || maskFolder.equals(this.maskFolder)) {
             return;
         }
         this.maskFolder = maskFolder;
-        setChanged();
-        notifyObservers();
     }
 
     public void setImageResourcesFolder(String imageResourcesFolder) {
@@ -43,11 +43,12 @@ public class DatabaseWindowContext extends Observable {
             return;
         }
         this.resourcesFolder = imageResourcesFolder;
-        setChanged();
-        notifyObservers();
     }
 
-    public void setLoading(boolean loading) {
-        this.loading = loading;
+    public void setColorReduce(ColorReduce colorReduce) {
+        if (colorReduce.equals(this.colorReduce)) {
+            return;
+        }
+        this.colorReduce = colorReduce;
     }
 }
