@@ -1,4 +1,4 @@
-package pl.olszak.michal.detector.controller.creator;
+package pl.olszak.michal.detector.controller;
 
 import io.reactivex.Flowable;
 import io.reactivex.annotations.NonNull;
@@ -104,13 +104,13 @@ public class ProbabilityMapCreator implements MapCreator {
         final long totalCount = table.getTotalCount();
 
         Flowable.fromIterable(table.getLesionColors().entrySet())
-                .filter(entry -> !databaseFacade.probabilityExistst(entry.getKey(), colorReduce))
+                .filter(entry -> !databaseFacade.probabilityExists(entry.getKey(), colorReduce))
                 .forEach(entry ->
                         insertProbability(table, totalCount, entry.getKey(), entry.getValue(), false)
                 );
 
         Flowable.fromIterable(table.getNonLesionColors().entrySet())
-                .filter(entry -> !databaseFacade.probabilityExistst(entry.getKey(), colorReduce))
+                .filter(entry -> !databaseFacade.probabilityExists(entry.getKey(), colorReduce))
                 .forEach(entry ->
                         insertProbability(table, totalCount, entry.getKey(), entry.getValue(), true)
                 );

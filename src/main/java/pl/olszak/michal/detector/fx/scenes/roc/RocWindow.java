@@ -44,6 +44,8 @@ public class RocWindow extends Presentation {
     private JFXTextField rocFilesDestinationText;
     @FXML
     private JFXTextField databaseCollectionNameText;
+    @FXML
+    private JFXTextField tresholdsImage;
 
     private final CallbackProvider callbackProvider;
     private final RocWindowContext rocWindowContext;
@@ -59,6 +61,11 @@ public class RocWindow extends Presentation {
         databaseCollectionNameText.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 ValidationFacade.validate(databaseCollectionNameText);
+            }
+        });
+        tresholdsImage.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                ValidationFacade.validate(tresholdsImage);
             }
         });
         ObservableList<ColorReduce> reduction = FXCollections.observableArrayList(ColorReduce.values());
@@ -81,6 +88,11 @@ public class RocWindow extends Presentation {
                 rocWindowContext.setDatabaseCollectionName(newValue);
             }
         });
+        tresholdsImage.textProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue.equals(oldValue)) {
+                rocWindowContext.setImageTresholds(newValue);
+            }
+        }));
     }
 
     @FXML

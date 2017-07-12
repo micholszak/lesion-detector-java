@@ -33,7 +33,7 @@
                         <Insets bottom="5.0" top="5.0" />
                     </VBox.margin>
                 </HBox>
-                <HBox spacing="15.0">
+                <HBox spacing="15.0" VBox.vgrow="NEVER">
                     <children>
                         <JFXTextField fx:id="rocFilesDestinationText" editable="false" labelFloat="true" promptText="Roc Images Destination" />
                         <JFXButton buttonType="RAISED" onAction="#openRocFilesDestination" prefHeight="40" prefWidth="100" styleClass="jfx-button-raised" text="OPEN" />
@@ -42,18 +42,30 @@
                         <Insets bottom="5.0" top="5.0" />
                     </VBox.margin>
                 </HBox>
-                <ValidationFacade>
-                    <control>
-                        <JFXTextField fx:id="databaseCollectionNameText" promptText="Database RocSet name" />
-                    </control>
-                    <validators>
-                        <RequiredFieldValidator message="Input Required!">
+            <HBox spacing="15.0" VBox.vgrow="NEVER">
+               <children>
+                      <ValidationFacade>
+                          <control>
+                              <JFXTextField fx:id="databaseCollectionNameText" promptText="Database RocSet name" />
+                          </control>
+                          <validators>
+                              <RequiredFieldValidator message="Input Required!">
                         </RequiredFieldValidator>
-                    </validators>
-                    <VBox.margin>
-                        <Insets bottom="5.0" top="5.0" />
-                    </VBox.margin>
-                </ValidationFacade>
+                          </validators>
+                      </ValidationFacade>
+                  <ValidationFacade>
+                     <control>
+                        <JFXTextField fx:id="thresholdsImage" promptText="Thresholds separated by coma" />
+                     </control>
+                     <validators>
+                        <RequiredFieldValidator message="Input Required!" />
+                     </validators>
+                  </ValidationFacade>
+               </children>
+                <VBox.margin>
+                    <Insets bottom="5.0" top="5.0" />
+                </VBox.margin>
+            </HBox>
                 <Label text="Color reduction">
                     <VBox.margin>
                         <Insets top="5.0" />

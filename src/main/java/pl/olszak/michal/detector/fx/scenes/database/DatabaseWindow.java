@@ -13,7 +13,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import pl.olszak.michal.detector.controller.creator.MapCreator;
+import pl.olszak.michal.detector.controller.MapCreator;
 import pl.olszak.michal.detector.fx.Presentation;
 import pl.olszak.michal.detector.system.configuration.ScreensConfiguration;
 import pl.olszak.michal.detector.utils.CallbackProvider;

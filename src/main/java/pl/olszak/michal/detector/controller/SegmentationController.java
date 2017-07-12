@@ -1,4 +1,4 @@
-package pl.olszak.michal.detector.controller.segmentation;
+package pl.olszak.michal.detector.controller;
 
 import io.reactivex.Flowable;
 import org.opencv.core.CvType;
@@ -6,7 +6,6 @@ import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import pl.olszak.michal.detector.core.converter.ConvertedContainerCreator;
 import pl.olszak.michal.detector.core.database.DatabaseFacade;
 import pl.olszak.michal.detector.exception.FolderCreationException;
@@ -40,8 +39,6 @@ public class SegmentationController {
     private final DatabaseFacade databaseFacade;
 
     private static final int MAX_VALUE = 256;
-
-    private static final String EXTENSION = ".bmp";
 
     public SegmentationController(ContainerOperations operations, ConvertedContainerCreator creator, DatabaseFacade databaseFacade) {
         this.operations = operations;
@@ -93,7 +90,7 @@ public class SegmentationController {
         Mat mat = new Mat(colored.size(), CvType.CV_8U);
         mat.put(0, 0, segmentedBytes);
 
-        File file = new File(destinationPath, filename + EXTENSION);
+        File file = new File(destinationPath, filename + ContainerOperations.BMP_EXTENSION);
         Imgcodecs.imwrite(file.getAbsolutePath(), mat);
     }
 

@@ -15,6 +15,8 @@ import java.util.Iterator;
  */
 public final class ContainerOperations {
 
+    public static final String BMP_EXTENSION = ".bmp";
+
     private final Logger logger = LoggerFactory.getLogger(ContainerOperations.class);
 
     private final String[] ACCEPTABLE_EXTENSIONS;

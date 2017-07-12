@@ -16,7 +16,7 @@ public class CallbackProvider {
         public ListCell<ColorReduce> call(ListView<ColorReduce> param) {
             return new ListCell<ColorReduce>() {
                 {
-                    super.setPrefHeight(60);
+                    super.setPrefHeight(48);
                 }
 
                 @Override
