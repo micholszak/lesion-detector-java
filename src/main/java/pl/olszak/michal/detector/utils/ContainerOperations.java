@@ -38,7 +38,7 @@ public final class ContainerOperations {
         iterator.forEachRemaining(file -> {
             if (file.isFile()) {
                 container.addImage(file);
-                logger.info(String.format("Added $1%s to container", file.getName()));
+                logger.info(String.format("Added %s to container", file.getName()));
             }
         });
 
