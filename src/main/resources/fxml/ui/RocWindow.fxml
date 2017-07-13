@@ -1,92 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXComboBox?>
-<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.*?>
 <?import com.jfoenix.validation.RequiredFieldValidator?>
 <?import com.jfoenix.validation.ValidationFacade?>
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-
-<StackPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.olszak.michal.detector.fx.scenes.roc.RocWindow">
+<?import javafx.scene.layout.*?>
+<StackPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111"
+           xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.olszak.michal.detector.fx.scenes.roc.RocWindow">
     <children>
         <VBox fillWidth="false" StackPane.alignment="TOP_LEFT">
             <children>
                 <HBox spacing="15.0" VBox.vgrow="NEVER">
                     <children>
-                        <JFXTextField fx:id="segmentationFilesFolderText" editable="false" labelFloat="true" promptText="Segmentation Files Folder" />
-                        <JFXButton buttonType="RAISED" onAction="#openSegmentationFilesFolder" prefHeight="40" prefWidth="100" styleClass="jfx-button-raised" text="OPEN" />
+                        <JFXTextField fx:id="segmentationFilesFolderText" editable="false" labelFloat="true"
+                                      promptText="Segmentation Files Folder"/>
+                        <JFXButton buttonType="RAISED" onAction="#openSegmentationFilesFolder" prefHeight="40"
+                                   prefWidth="100" styleClass="jfx-button-raised" text="OPEN"/>
                     </children>
                     <VBox.margin>
-                        <Insets bottom="5.0" top="5.0" />
+                        <Insets bottom="5.0" top="5.0"/>
                     </VBox.margin>
                 </HBox>
                 <HBox spacing="15.0" VBox.vgrow="NEVER">
                     <children>
-                        <JFXTextField fx:id="maskResourcesFolderText" editable="false" labelFloat="true" promptText="Mask Resources Folder" />
-                        <JFXButton buttonType="RAISED" onAction="#openMaskResourcesFolder" prefHeight="40" prefWidth="100" styleClass="jfx-button-raised" text="OPEN" />
+                        <JFXTextField fx:id="maskResourcesFolderText" editable="false" labelFloat="true"
+                                      promptText="Mask Resources Folder"/>
+                        <JFXButton buttonType="RAISED" onAction="#openMaskResourcesFolder" prefHeight="40"
+                                   prefWidth="100" styleClass="jfx-button-raised" text="OPEN"/>
                     </children>
                     <VBox.margin>
-                        <Insets bottom="5.0" top="5.0" />
+                        <Insets bottom="5.0" top="5.0"/>
                     </VBox.margin>
                 </HBox>
                 <HBox spacing="15.0" VBox.vgrow="NEVER">
                     <children>
-                        <JFXTextField fx:id="rocFilesDestinationText" editable="false" labelFloat="true" promptText="Roc Images Destination" />
-                        <JFXButton buttonType="RAISED" onAction="#openRocFilesDestination" prefHeight="40" prefWidth="100" styleClass="jfx-button-raised" text="OPEN" />
+                        <JFXTextField fx:id="rocFilesDestinationText" editable="false" labelFloat="true"
+                                      promptText="Roc Images Destination"/>
+                        <JFXButton buttonType="RAISED" onAction="#openRocFilesDestination" prefHeight="40"
+                                   prefWidth="100" styleClass="jfx-button-raised" text="OPEN"/>
                     </children>
                     <VBox.margin>
-                        <Insets bottom="5.0" top="5.0" />
+                        <Insets bottom="5.0" top="5.0"/>
                     </VBox.margin>
                 </HBox>
-            <HBox spacing="15.0" VBox.vgrow="NEVER">
-               <children>
-                      <ValidationFacade>
-                          <control>
-                              <JFXTextField fx:id="databaseCollectionNameText" promptText="Database RocSet name" />
-                          </control>
-                          <validators>
-                              <RequiredFieldValidator message="Input Required!">
-                        </RequiredFieldValidator>
-                          </validators>
-                      </ValidationFacade>
-                  <ValidationFacade>
-                     <control>
-                        <JFXTextField fx:id="thresholdsImage" promptText="Thresholds separated by coma" />
-                     </control>
-                     <validators>
-                        <RequiredFieldValidator message="Input Required!" />
-                     </validators>
-                  </ValidationFacade>
-               </children>
-                <VBox.margin>
-                    <Insets bottom="5.0" top="5.0" />
-                </VBox.margin>
-            </HBox>
+                <HBox spacing="15.0" VBox.vgrow="NEVER">
+                    <children>
+                        <ValidationFacade>
+                            <control>
+                                <JFXTextField fx:id="databaseCollectionNameText" promptText="Database RocSet name"/>
+                            </control>
+                            <validators>
+                                <RequiredFieldValidator message="Input Required!">
+                                </RequiredFieldValidator>
+                            </validators>
+                        </ValidationFacade>
+                        <ValidationFacade>
+                            <control>
+                                <JFXTextField fx:id="thresholdsImage" promptText="Thresholds separated by coma"/>
+                            </control>
+                            <validators>
+                                <RequiredFieldValidator message="Input Required!"/>
+                            </validators>
+                        </ValidationFacade>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="5.0" top="5.0"/>
+                    </VBox.margin>
+                </HBox>
                 <Label text="Color reduction">
                     <VBox.margin>
-                        <Insets top="5.0" />
+                        <Insets top="5.0"/>
                     </VBox.margin>
                 </Label>
                 <JFXComboBox fx:id="colorReductionCombo" prefWidth="200.0">
                     <VBox.margin>
-                        <Insets bottom="5.0" top="5.0" />
+                        <Insets bottom="5.0" top="5.0"/>
                     </VBox.margin>
                 </JFXComboBox>
             </children>
             <StackPane.margin>
-                <Insets bottom="120.0" left="32.0" right="32.0" top="12.0" />
+                <Insets bottom="120.0" left="32.0" right="32.0" top="12.0"/>
             </StackPane.margin>
         </VBox>
         <VBox fillWidth="false" spacing="15" StackPane.alignment="TOP_LEFT">
             <children>
-                <JFXButton buttonType="RAISED" prefHeight="40.0" prefWidth="200.0" styleClass="jfx-button-raised" text="PROCESS ROC" />
+                <JFXButton buttonType="RAISED" prefHeight="40.0" prefWidth="200.0" styleClass="jfx-button-raised"
+                           text="PROCESS ROC" onAction="#startRoc"/>
             </children>
             <StackPane.margin>
-                <Insets bottom="34.0" left="32.0" right="32.0" top="326.0" />
+                <Insets bottom="34.0" left="32.0" right="32.0" top="326.0"/>
             </StackPane.margin>
         </VBox>
     </children>

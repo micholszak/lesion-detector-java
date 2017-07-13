@@ -63,9 +63,9 @@ public class SegmentationWindow extends Presentation {
     @FXML
     public void onChooseSegmentationDestination() {
         logger.info("Open segmentation destination");
-        Optional<File> segmenattionDestination = DialogUtils.openFolder("Choose destination for segmentation", screensConfiguration.getStage());
-        if (segmenattionDestination.isPresent()) {
-            File file = segmenattionDestination.get();
+        Optional<File> segmenationDestination = DialogUtils.openFolder("Choose destination for segmentation", screensConfiguration.getStage());
+        if (segmenationDestination.isPresent()) {
+            File file = segmenationDestination.get();
             context.setSegmentationDestinationFolder(file.getAbsolutePath());
             segmentationDestinationText.setText(file.getAbsolutePath());
         }

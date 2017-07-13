@@ -92,6 +92,9 @@ public class SegmentationController {
 
         File file = new File(destinationPath, filename + ContainerOperations.BMP_EXTENSION);
         Imgcodecs.imwrite(file.getAbsolutePath(), mat);
+
+        mat.release();
+        colored.release();
     }
 
     private void cacheMap(Map<Color, Double> cacheMap, Color color, ColorReduce colorReduce) {

@@ -102,8 +102,8 @@ public class DatabaseWindow extends Presentation {
             return;
         }
         logger.info("Process training");
-        Observable.just(model.getColorReduce())
+        Observable.just(model)
                 .subscribeOn(Schedulers.computation())
-                .subscribe(action -> probabilityMapCreator.process(action, model));
+                .subscribe(probabilityMapCreator::process);
     }
 }

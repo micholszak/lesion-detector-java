@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.core.MongoOperations;
 import pl.olszak.michal.detector.controller.MapCreator;
 import pl.olszak.michal.detector.controller.ProbabilityMapCreator;
+import pl.olszak.michal.detector.controller.RocController;
 import pl.olszak.michal.detector.controller.SegmentationController;
 import pl.olszak.michal.detector.core.converter.ConvertedContainerCreator;
 import pl.olszak.michal.detector.core.converter.ImageConverter;
@@ -61,6 +62,12 @@ public class OperationsConfiguration {
     @Scope("prototype")
     public SegmentationController segmentationController(ContainerOperations containerOperations, ConvertedContainerCreator creator, DatabaseFacade databaseFacade) {
         return new SegmentationController(containerOperations, creator, databaseFacade);
+    }
+
+    @Bean
+    @Scope("prototype")
+    public RocController rocController(ContainerOperations containerOperations, ConvertedContainerCreator creator, DatabaseFacade databaseFacade) {
+        return new RocController(containerOperations, creator, databaseFacade);
     }
 
     @Bean

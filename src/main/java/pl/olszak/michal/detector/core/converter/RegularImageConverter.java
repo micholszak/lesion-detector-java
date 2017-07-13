@@ -24,14 +24,14 @@ public class RegularImageConverter implements ImageConverter {
 
     @Override
     public Mat threshold(Mat image, int thresh, boolean constant) {
-        Mat thresholded = new Mat(image.height(), image.width(), image.type());
+        Mat threshold = new Mat(image.height(), image.width(), image.type());
 
         if (constant) {
-            Imgproc.threshold(image, thresholded, 0, 1, Imgproc.THRESH_BINARY);
+            Imgproc.threshold(image, threshold, 0, 1, Imgproc.THRESH_BINARY);
         } else {
-            Imgproc.threshold(image, thresholded, thresh, 1, Imgproc.THRESH_BINARY);
+            Imgproc.threshold(image, threshold, thresh, 1, Imgproc.THRESH_BINARY);
         }
 
-        return thresholded;
+        return threshold;
     }
 }

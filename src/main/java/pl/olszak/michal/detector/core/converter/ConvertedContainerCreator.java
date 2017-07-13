@@ -2,12 +2,12 @@ package pl.olszak.michal.detector.core.converter;
 
 import io.reactivex.Observable;
 import org.apache.commons.io.FilenameUtils;
-import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.olszak.michal.detector.model.file.AbstractImageFile;
 import pl.olszak.michal.detector.model.file.container.coverted.ConvertedContainer;
 import pl.olszak.michal.detector.model.file.container.coverted.ConvertedFile;
+import pl.olszak.michal.detector.model.file.container.coverted.ConvertedFileFactory;
 
 import java.util.List;
 
@@ -30,11 +30,10 @@ public class ConvertedContainerCreator {
 
         Observable.fromIterable(files)
                 .forEach(image -> {
-                    Mat conversion = converter.convert(image);
-                    ConvertedFile converted = new ConvertedFile(image, conversion);
+                    ConvertedFile converted = ConvertedFileFactory.createColored(image, converter);
                     container.put(FilenameUtils.getBaseName(image.getFileName()), converted);
-                    logger.info(String.format("Converted $1%s to colored container", image.getFileName()));
                 });
+        logger.info("Created colored converted container");
 
         return container;
     }
@@ -44,13 +43,10 @@ public class ConvertedContainerCreator {
 
         Observable.fromIterable(files)
                 .forEach(image -> {
-                    Mat conversion = converter.convert(image);
-                    Mat thresholded = converter.threshold(conversion, threshold, constantThreshold);
-
-                    ConvertedFile converted = new ConvertedFile(image, thresholded);
+                    ConvertedFile converted = ConvertedFileFactory.createThreshold(image, converter, threshold, constantThreshold);
                     container.put(FilenameUtils.getBaseName(image.getFileName()), converted);
-                    logger.info(String.format("Converted $1%s to thresholds", image.getFileName()));
                 });
+        logger.info("Created threshold converted container");
 
         return container;
     }

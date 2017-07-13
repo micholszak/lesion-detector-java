@@ -1,27 +1,26 @@
 package pl.olszak.michal.detector.model.file.container.coverted;
 
 import org.opencv.core.Mat;
+import pl.olszak.michal.detector.core.converter.ImageConverter;
 import pl.olszak.michal.detector.model.file.AbstractImageFile;
 
 /**
  * @author molszak
  *         created on 27.03.2017.
  */
-public class ConvertedFile {
+public abstract class ConvertedFile {
 
-    private final AbstractImageFile image;
-    private final Mat converted;
+    protected final AbstractImageFile image;
+    protected final ImageConverter converter;
 
-    public ConvertedFile(AbstractImageFile image, Mat converted) {
+    public ConvertedFile(AbstractImageFile image, ImageConverter converter) {
         this.image = image;
-        this.converted = converted;
+        this.converter = converter;
     }
 
     public AbstractImageFile getImage() {
         return image;
     }
 
-    public Mat getConverted() {
-        return converted;
-    }
+    public abstract Mat getConverted();
 }

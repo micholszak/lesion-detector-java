@@ -44,13 +44,13 @@ public class ProbabilityMapCreator implements MapCreator {
     }
 
     @Override
-    public void process(final ColorReduce colorReduce, final DatabaseWindowContext context) {
+    public void process(final DatabaseWindowContext context) {
         logger.info("Started process");
-        populateTable(colorReduce, context);
+        populateTable(context);
     }
 
-    private void populateTable(final ColorReduce colorReduce, final DatabaseWindowContext context) {
-        BayessianTable table = new BayessianTable(colorReduce.getValue());
+    private void populateTable(final DatabaseWindowContext context) {
+        BayessianTable table = new BayessianTable(context.getColorReduce().getValue());
         ImageContainer colored = containerOperations.create(context.getImageResourcesFolder(), ImageType.COLORED);
         ImageContainer mask = containerOperations.create(context.getMaskFolder(), ImageType.GRAYSCALE_MASK);
 
@@ -61,10 +61,10 @@ public class ProbabilityMapCreator implements MapCreator {
                 .filter(entry -> coloredConverted.getConvertedFiles().containsKey(entry.getKey()))
                 .forEach(entry -> {
                     sampleSize.incrementAndGet();
-                    addSample(colorReduce, table, coloredConverted, entry);
+                    addSample(context.getColorReduce(), table, coloredConverted, entry);
                 });
 
-        createDatabase(table, colorReduce);
+        createDatabase(table, context.getColorReduce());
     }
 
     private void addSample(ColorReduce colorReduce, BayessianTable table, ConvertedContainer coloredConverted, Map.Entry<String, ConvertedFile> entry) {
@@ -97,6 +97,9 @@ public class ProbabilityMapCreator implements MapCreator {
                 }
             }
         }
+
+        coloredMat.release();
+        maskMat.release();
     }
 
     private void createDatabase(BayessianTable table, @NonNull final ColorReduce colorReduce) {

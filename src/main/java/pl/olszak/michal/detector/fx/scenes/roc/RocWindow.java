@@ -3,6 +3,8 @@ package pl.olszak.michal.detector.fx.scenes.roc;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.ValidationFacade;
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import pl.olszak.michal.detector.controller.RocController;
 import pl.olszak.michal.detector.fx.Presentation;
 import pl.olszak.michal.detector.system.configuration.ScreensConfiguration;
 import pl.olszak.michal.detector.utils.CallbackProvider;
@@ -45,15 +49,17 @@ public class RocWindow extends Presentation {
     @FXML
     private JFXTextField databaseCollectionNameText;
     @FXML
-    private JFXTextField tresholdsImage;
+    private JFXTextField thresholdsImage;
 
     private final CallbackProvider callbackProvider;
     private final RocWindowContext rocWindowContext;
+    private final RocController rocController;
 
-    public RocWindow(ScreensConfiguration screensConfiguration, CallbackProvider callbackProvider, RocWindowContext rocWindowContext) {
+    public RocWindow(ScreensConfiguration screensConfiguration, CallbackProvider callbackProvider, RocWindowContext rocWindowContext, RocController rocController) {
         super(screensConfiguration);
         this.callbackProvider = callbackProvider;
         this.rocWindowContext = rocWindowContext;
+        this.rocController = rocController;
     }
 
     @FXML
@@ -63,9 +69,9 @@ public class RocWindow extends Presentation {
                 ValidationFacade.validate(databaseCollectionNameText);
             }
         });
-        tresholdsImage.focusedProperty().addListener((observable, oldValue, newValue) -> {
+        thresholdsImage.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
-                ValidationFacade.validate(tresholdsImage);
+                ValidationFacade.validate(thresholdsImage);
             }
         });
         ObservableList<ColorReduce> reduction = FXCollections.observableArrayList(ColorReduce.values());
@@ -88,7 +94,7 @@ public class RocWindow extends Presentation {
                 rocWindowContext.setDatabaseCollectionName(newValue);
             }
         });
-        tresholdsImage.textProperty().addListener(((observable, oldValue, newValue) -> {
+        thresholdsImage.textProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue.equals(oldValue)) {
                 rocWindowContext.setImageTresholds(newValue);
             }
@@ -126,6 +132,23 @@ public class RocWindow extends Presentation {
             rocWindowContext.setRocFilesDestinationText(file.getAbsolutePath());
             rocFilesDestinationText.setText(file.getAbsolutePath());
         }
+    }
+
+    @FXML
+    public void startRoc() {
+        if (!ValidationFacade.validate(databaseCollectionNameText) ||
+                !ValidationFacade.validate(thresholdsImage) ||
+                StringUtils.isEmpty(rocWindowContext.getMaskResourcesFolder()) ||
+                StringUtils.isEmpty(rocWindowContext.getRocFilesDestinationText()) ||
+                StringUtils.isEmpty(rocWindowContext.getSegmentationFilesFolder())) {
+            logger.error("Could not process roc creation, some of the fields are empty");
+            return;
+        }
+
+        logger.info("Starting roc");
+        Observable.just(rocWindowContext)
+                .subscribeOn(Schedulers.computation())
+                .subscribe(rocController::createRocDatabase);
     }
 
 }

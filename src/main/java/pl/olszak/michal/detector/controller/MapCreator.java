@@ -9,6 +9,6 @@ import pl.olszak.michal.detector.utils.ColorReduce;
  */
 public interface MapCreator {
 
-    void process(ColorReduce colorReduce, DatabaseWindowContext context);
+    void process(DatabaseWindowContext context);
 
 }
