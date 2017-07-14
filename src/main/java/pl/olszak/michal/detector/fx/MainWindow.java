@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ public class MainWindow extends Presentation {
     private StackPane rocView;
 
     @FXML
-    private JFXTextArea loggerOutput;
+    private TextArea loggerOutput;
 
     public MainWindow(ScreensConfiguration screensConfiguration) {
         super(screensConfiguration);

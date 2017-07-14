@@ -32,12 +32,7 @@
                         <Insets bottom="5.0" top="5.0" />
                     </VBox.margin>
                 </HBox>
-                <Label text="Color Reduction">
-                    <VBox.margin>
-                        <Insets bottom="5.0" top="5.0" />
-                    </VBox.margin>
-                </Label>
-                <JFXComboBox fx:id="imageReductionCombo" prefWidth="200.0" promptText="ColorReduction">
+                <JFXComboBox fx:id="imageReductionCombo" prefWidth="200.0" promptText="Color reduction" labelFloat="true">
                     <VBox.margin>
                         <Insets bottom="5.0" top="5.0" />
                     </VBox.margin>

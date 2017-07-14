@@ -4,37 +4,37 @@
 <?import com.jfoenix.controls.JFXTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Tab?>
-<?import javafx.scene.layout.*?>
-<StackPane prefHeight="400.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="pl.olszak.michal.detector.fx.MainWindow">
+<?import javafx.scene.layout.StackPane?>
+
+<?import javafx.scene.control.TextArea?>
+<StackPane prefHeight="400.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.olszak.michal.detector.fx.MainWindow">
     <children>
         <JFXTabPane fx:id="tabPane" tabMaxHeight="48.0" tabMinHeight="48.0" StackPane.alignment="TOP_LEFT">
             <tabs>
                 <Tab fx:id="databaseTab" text="Create Database">
                     <content>
-                        <StackPane fx:id="databaseView" prefHeight="400" prefWidth="600.0"/>
+                        <StackPane fx:id="databaseView" prefHeight="400" prefWidth="600.0" />
                     </content>
                 </Tab>
                 <Tab fx:id="segmentationTab" text="Segmentation">
                     <content>
-                        <StackPane fx:id="segmentationView" prefHeight="400" prefWidth="600.0"/>
+                        <StackPane fx:id="segmentationView" prefHeight="400" prefWidth="600.0" />
                     </content>
                 </Tab>
                 <Tab fx:id="rocTab" text="Receiver Operating Characteristic">
                     <content>
-                        <StackPane fx:id="rocView" prefHeight="400" prefWidth="600"/>
+                        <StackPane fx:id="rocView" prefHeight="400" prefWidth="600" />
                     </content>
                 </Tab>
             </tabs>
             <StackPane.margin>
-                <Insets bottom="120.0"/>
+                <Insets bottom="120.0" />
             </StackPane.margin>
         </JFXTabPane>
-        <JFXTextArea fx:id="loggerOutput" editable="false" labelFloat="true" maxHeight="120.0"
-                     nodeOrientation="LEFT_TO_RIGHT" promptText="Console Output" StackPane.alignment="BOTTOM_LEFT">
+        <TextArea fx:id="loggerOutput" editable="false" maxHeight="120.0" nodeOrientation="LEFT_TO_RIGHT" promptText="Console Output" StackPane.alignment="BOTTOM_LEFT">
             <StackPane.margin>
-                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
+                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
             </StackPane.margin>
-        </JFXTextArea>
+        </TextArea>
     </children>
 </StackPane>

@@ -76,14 +76,21 @@
     -fx-font-size: 0.75em;
 }
 
-.viewport {
-    -fx-border-width: 1;
-    -fx-border-color: light-primary-color;
-}
-
 .jfx-text-area .viewport {
     -fx-background-color: white;
     -fx-font-family: "Roboto";
+    -fx-padding: 5px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+}
+
+.jfx-text-area:focused {
+    -fx-focus-color: transparent;
+}
+
+.jfx-text-area {
+    -fx-text-box-border: transparent;
+    -fx-padding: 1 3 1 3;
 }
 
 /**
