@@ -32,6 +32,9 @@ public class FileOperationsUtils {
 
     public static String createDestinationFolder(int threshold, String destination) throws FolderCreationException {
         File file = new File(destination, String.format(Locale.getDefault(), THRESHOLD_FOLDER_PREFIX, threshold));
+        if(file.exists()){
+            return file.getAbsolutePath();
+        }
         try {
             FileUtils.forceMkdir(file);
             return file.getAbsolutePath();

@@ -27,4 +27,9 @@ public class ColoredConvertedFile extends ConvertedFile {
         logger.info(String.format(Locale.getDefault(), "Created colored image %s", image.getFileName()));
         return converted;
     }
+
+    @Override
+    public Mat getConverted(int threshold) {
+        return getConverted();
+    }
 }

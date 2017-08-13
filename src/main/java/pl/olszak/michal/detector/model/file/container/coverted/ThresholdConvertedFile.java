@@ -31,4 +31,15 @@ public class ThresholdConvertedFile extends ConvertedFile {
         logger.info(String.format("Created threshold image %s", image.getFileName()));
         return threshed;
     }
+
+    @Override
+    public Mat getConverted(int threshold) {
+        Mat conversion = converter.convert(image);
+        Mat threshed = converter.threshold(conversion, threshold, false);
+
+        conversion.release();
+
+        logger.info(String.format("Created threshold image %s", image.getFileName()));
+        return threshed;
+    }
 }

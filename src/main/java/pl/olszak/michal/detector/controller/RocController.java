@@ -25,13 +25,11 @@ import pl.olszak.michal.detector.utils.Operations;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author molszak
- *         created on 12.07.2017.
+ * created on 12.07.2017.
  */
 public class RocController {
 
@@ -64,62 +62,77 @@ public class RocController {
         ImageContainer maskFiles = operations.create(context.getMaskResourcesFolder(), ImageType.GRAYSCALE_MASK);
 
         ConvertedContainer maskConverted = creator.createThresholds(maskFiles.getImages(), 128, true);
-        Set<Integer> visualizationThresholds = context.getTresholds();
 
         Set<RocModel> rocModels = new HashSet<>();
+        ConvertedContainer segmentedConverted = creator.createThresholds(segmentationFilesContainer.getImages(), 1, false);
 
-        for (int threshold = 0; threshold < MAX_THRESH; threshold++) {
-            logger.info("Creating Roc for threshold " + threshold);
-
-            ConvertedContainer segmentedConverted = creator.createThresholds(segmentationFilesContainer.getImages(), threshold, false);
-
-            if (visualizationThresholds.contains(threshold)) {
-                try {
-                    String destination = FileOperationsUtils.createDestinationFolder(threshold, context.getRocFilesDestinationText());
-                    processVisualizationContainer(destination, maskConverted, segmentedConverted, threshold)
-                            .subscribe(rocModels::addAll);
-                } catch (FolderCreationException e) {
-                    logger.error(e.getMessage());
-                    logger.info("Processing with regular creation");
-                    processContainer(maskConverted, segmentedConverted, threshold)
-                            .subscribe(rocModels::addAll);
-                }
-            } else {
-                processContainer(maskConverted, segmentedConverted, threshold)
-                        .subscribe(rocModels::addAll);
-            }
-        }
+        processContainer(context, maskConverted, segmentedConverted)
+                .subscribe(rocModels::addAll);
 
         RocDataSet rocDataSet = new RocDataSet(context.getDatabaseCollectionName(), context.getColorReduce(), rocModels);
         databaseFacade.insert(rocDataSet);
         logger.info("Roc process finished");
     }
 
-    private Single<HashSet<RocModel>> processContainer(final ConvertedContainer maskConverted, final ConvertedContainer segmentedConverted, final int threshold) {
+    private Flowable<Set<RocModel>> processContainer(RocWindowContext context, final ConvertedContainer maskConverted, final ConvertedContainer segmentedConverted) {
         return Flowable.fromIterable(segmentedConverted.getConvertedFiles().entrySet())
                 .filter(entry -> maskConverted.getConvertedFiles().containsKey(entry.getKey()))
-                .map(entry -> processSingle(entry.getKey(), maskConverted.getConvertedFiles().get(entry.getKey()), entry.getValue(), threshold))
-                .collectInto(new HashSet<RocModel>(), Set::add);
+                .map(entry -> processSingle(context, entry.getKey(), maskConverted.getConvertedFiles().get(entry.getKey()), entry.getValue()));
     }
 
-    private Single<HashSet<RocModel>> processVisualizationContainer(final String destination, final ConvertedContainer maskConverted, final ConvertedContainer segmentedConverted, final int threshold) {
-        return Flowable.fromIterable(segmentedConverted.getConvertedFiles().entrySet())
-                .filter(entry -> maskConverted.getConvertedFiles().containsKey(entry.getKey()))
-                .map(entry -> processSingleVisualization(destination, entry.getKey(), maskConverted.getConvertedFiles().get(entry.getKey()), entry.getValue(), threshold))
-                .collectInto(new HashSet<RocModel>(), Set::add);
-    }
-
-    private RocModel processSingleVisualization(final String destination, final String filename, final ConvertedFile convertedMask, final ConvertedFile convertedSegmentation, final int threshold) {
+    private Set<RocModel> processSingle(RocWindowContext context, final String filename, final ConvertedFile convertedMask, final ConvertedFile convertedSegmentation) {
         Mat mask = convertedMask.getConverted();
-        Mat segmentation = convertedSegmentation.getConverted();
+        Set<RocModel> rocModels = new HashSet<>();
 
-        logger.info(String.format(Locale.getDefault(), "Processing visualization for %s threshold %d", filename, threshold));
+        Set<Integer> visualization = context.getTresholds();
 
+        for (int threshold = 0; threshold < MAX_THRESH; threshold++) {
+            if (visualization.contains(threshold)) {
+
+                logger.info(String.format(Locale.getDefault(), "Processing visualization for %s threshold %d", filename, threshold));
+
+                try {
+                    Mat segmentation = convertedSegmentation.getConverted(threshold);
+                    String destination = FileOperationsUtils.createDestinationFolder(threshold, context.getRocFilesDestinationText());
+                    RocModel model = createVisualization(destination, mask, segmentation, filename, threshold);
+                    rocModels.add(model);
+
+                    segmentation.release();
+                } catch (FolderCreationException e) {
+                    logger.info("Could not create folder, processing regular");
+                    logger.info(String.format(Locale.getDefault(), "Processing single for %s threshold %d", filename, threshold));
+
+                    Mat segmentation = convertedSegmentation.getConverted(threshold);
+
+                    RocModel model = createWithoutVisualisation(mask, segmentation, filename, threshold);
+
+                    rocModels.add(model);
+                    segmentation.release();
+
+                }
+            } else {
+                logger.info(String.format(Locale.getDefault(), "Processing single for %s threshold %d", filename, threshold));
+
+                Mat segmentation = convertedSegmentation.getConverted(threshold);
+
+                RocModel model = createWithoutVisualisation(mask, segmentation, filename, threshold);
+
+                rocModels.add(model);
+                segmentation.release();
+            }
+
+        }
+
+        mask.release();
+
+        return rocModels;
+    }
+
+    private RocModel createVisualization(String destination, Mat mask, Mat segmentation, String filename, int threshold) {
         int falsePositive = 0;
         int falseNegative = 0;
         int truePositive = 0;
         int trueNegative = 0;
-
         createSegmentationResultAndMaskImages(segmentation, mask, filename, destination);
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(mask.height() * mask.width() * CvType.CV_8SC(3))) {
@@ -158,9 +171,6 @@ public class RocController {
             //omit
         }
 
-        mask.release();
-        segmentation.release();
-
         return new RocModel(filename,
                 threshold,
                 falsePositive,
@@ -168,15 +178,9 @@ public class RocController {
                 truePositive,
                 trueNegative,
                 segmentation.width() * segmentation.height());
-
     }
 
-    private RocModel processSingle(final String filename, final ConvertedFile convertedMask, final ConvertedFile convertedSegmentation, final int threshold) {
-        Mat mask = convertedMask.getConverted();
-        Mat segmentation = convertedSegmentation.getConverted();
-
-        logger.info(String.format("Processing single for %s threshold %d", filename, threshold));
-
+    private RocModel createWithoutVisualisation(Mat mask, Mat segmentation, String filename, int threshold) {
         int falsePositive = 0;
         int falseNegative = 0;
         int truePositive = 0;
@@ -202,9 +206,6 @@ public class RocController {
             }
         }
 
-        mask.release();
-        segmentation.release();
-
         return new RocModel(filename,
                 threshold,
                 falsePositive,
@@ -214,7 +215,6 @@ public class RocController {
                 segmentation.width() * segmentation.height());
     }
 
-    // TODO: 13.07.2017 może zrobić z tego converted file ?
     private static void createSegmentationResultAndMaskImages(Mat segmentation, Mat mask, String filename, String destination) {
         File segFile = new File(destination, filename + "-seg" + ContainerOperations.BMP_EXTENSION);
         Mat segDisplay = new Mat(segmentation.size(), CvType.CV_8U);
