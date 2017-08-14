@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXTabPane?>
-<?import com.jfoenix.controls.JFXTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Tab?>
-<?import javafx.scene.layout.StackPane?>
-
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.*?>
 <StackPane prefHeight="400.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.olszak.michal.detector.fx.MainWindow">
     <children>
         <JFXTabPane fx:id="tabPane" tabMaxHeight="48.0" tabMinHeight="48.0" StackPane.alignment="TOP_LEFT">
