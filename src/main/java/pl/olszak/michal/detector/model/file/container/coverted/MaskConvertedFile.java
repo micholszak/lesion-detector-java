@@ -29,4 +29,9 @@ public class MaskConvertedFile extends ConvertedFile {
         logger.info(String.format(Locale.getDefault(), "Created mask image %s", image.getFileName()));
         return mask;
     }
+
+    @Override
+    public Mat getConverted(int threshold) {
+        return getConverted();
+    }
 }

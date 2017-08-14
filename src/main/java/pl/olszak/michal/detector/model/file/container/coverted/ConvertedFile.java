@@ -23,4 +23,6 @@ public abstract class ConvertedFile {
     }
 
     public abstract Mat getConverted();
+
+    public abstract Mat getConverted(int threshold);
 }
