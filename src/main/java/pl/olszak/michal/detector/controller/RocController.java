@@ -1,7 +1,7 @@
 package pl.olszak.michal.detector.controller;
 
 import io.reactivex.Flowable;
-import io.reactivex.Single;
+import io.reactivex.disposables.Disposable;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -12,7 +12,6 @@ import pl.olszak.michal.detector.core.converter.ConvertedContainerCreator;
 import pl.olszak.michal.detector.core.database.DatabaseFacade;
 import pl.olszak.michal.detector.exception.FolderCreationException;
 import pl.olszak.michal.detector.fx.scenes.roc.RocWindowContext;
-import pl.olszak.michal.detector.model.data.RocDataSet;
 import pl.olszak.michal.detector.model.data.RocModel;
 import pl.olszak.michal.detector.model.file.ImageType;
 import pl.olszak.michal.detector.model.file.container.coverted.ConvertedContainer;
@@ -25,7 +24,8 @@ import pl.olszak.michal.detector.utils.Operations;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * @author molszak
@@ -49,7 +49,7 @@ public class RocController {
 
     public void createRocDatabase(final RocWindowContext context) {
         logger.info("Started Roc Database creation process");
-        if (databaseFacade.probabilityDatabaseExists() && !databaseFacade.rocExists(context.getDatabaseCollectionName())) {
+        if (databaseFacade.probabilityDatabaseExists() && !databaseFacade.rocExists(context.getDatabaseCollectionName(), context.getColorReduce())) {
             create(context);
         } else {
             logger.info("Firstly process the probability map before creating Roc");
@@ -63,26 +63,20 @@ public class RocController {
 
         ConvertedContainer maskConverted = creator.createThresholds(maskFiles.getImages(), 128, true);
 
-        Set<RocModel> rocModels = new HashSet<>();
         ConvertedContainer segmentedConverted = creator.createThresholds(segmentationFilesContainer.getImages(), 1, false);
 
-        processContainer(context, maskConverted, segmentedConverted)
-                .subscribe(rocModels::addAll);
-
-        RocDataSet rocDataSet = new RocDataSet(context.getDatabaseCollectionName(), context.getColorReduce(), rocModels);
-        databaseFacade.insert(rocDataSet);
+        processContainer(context, maskConverted, segmentedConverted);
         logger.info("Roc process finished");
     }
 
-    private Flowable<Set<RocModel>> processContainer(RocWindowContext context, final ConvertedContainer maskConverted, final ConvertedContainer segmentedConverted) {
+    private Disposable processContainer(RocWindowContext context, final ConvertedContainer maskConverted, final ConvertedContainer segmentedConverted) {
         return Flowable.fromIterable(segmentedConverted.getConvertedFiles().entrySet())
                 .filter(entry -> maskConverted.getConvertedFiles().containsKey(entry.getKey()))
-                .map(entry -> processSingle(context, entry.getKey(), maskConverted.getConvertedFiles().get(entry.getKey()), entry.getValue()));
+                .subscribe(entry -> processSingle(context, entry.getKey(), maskConverted.getConvertedFiles().get(entry.getKey()), entry.getValue()));
     }
 
-    private Set<RocModel> processSingle(RocWindowContext context, final String filename, final ConvertedFile convertedMask, final ConvertedFile convertedSegmentation) {
+    private void processSingle(RocWindowContext context, final String filename, final ConvertedFile convertedMask, final ConvertedFile convertedSegmentation) {
         Mat mask = convertedMask.getConverted();
-        Set<RocModel> rocModels = new HashSet<>();
 
         Set<Integer> visualization = context.getTresholds();
 
@@ -94,8 +88,8 @@ public class RocController {
                 try {
                     Mat segmentation = convertedSegmentation.getConverted(threshold);
                     String destination = FileOperationsUtils.createDestinationFolder(threshold, context.getRocFilesDestinationText());
-                    RocModel model = createVisualization(destination, mask, segmentation, filename, threshold);
-                    rocModels.add(model);
+                    RocModel model = createVisualization(destination, mask, segmentation, filename, threshold, context);
+                    databaseFacade.insert(model);
 
                     segmentation.release();
                 } catch (FolderCreationException e) {
@@ -104,9 +98,9 @@ public class RocController {
 
                     Mat segmentation = convertedSegmentation.getConverted(threshold);
 
-                    RocModel model = createWithoutVisualisation(mask, segmentation, filename, threshold);
+                    RocModel model = createWithoutVisualisation(mask, segmentation, filename, threshold, context);
 
-                    rocModels.add(model);
+                    databaseFacade.insert(model);
                     segmentation.release();
 
                 }
@@ -115,20 +109,17 @@ public class RocController {
 
                 Mat segmentation = convertedSegmentation.getConverted(threshold);
 
-                RocModel model = createWithoutVisualisation(mask, segmentation, filename, threshold);
-
-                rocModels.add(model);
+                RocModel model = createWithoutVisualisation(mask, segmentation, filename, threshold, context);
+                databaseFacade.insert(model);
                 segmentation.release();
             }
 
         }
 
         mask.release();
-
-        return rocModels;
     }
 
-    private RocModel createVisualization(String destination, Mat mask, Mat segmentation, String filename, int threshold) {
+    private RocModel createVisualization(String destination, Mat mask, Mat segmentation, String filename, int threshold, final RocWindowContext context) {
         int falsePositive = 0;
         int falseNegative = 0;
         int truePositive = 0;
@@ -177,10 +168,12 @@ public class RocController {
                 falseNegative,
                 truePositive,
                 trueNegative,
-                segmentation.width() * segmentation.height());
+                segmentation.width() * segmentation.height(),
+                context.getColorReduce(),
+                context.getDatabaseCollectionName());
     }
 
-    private RocModel createWithoutVisualisation(Mat mask, Mat segmentation, String filename, int threshold) {
+    private RocModel createWithoutVisualisation(Mat mask, Mat segmentation, String filename, int threshold, final RocWindowContext context) {
         int falsePositive = 0;
         int falseNegative = 0;
         int truePositive = 0;
@@ -212,7 +205,9 @@ public class RocController {
                 falseNegative,
                 truePositive,
                 trueNegative,
-                segmentation.width() * segmentation.height());
+                segmentation.width() * segmentation.height(),
+                context.getColorReduce(),
+                context.getDatabaseCollectionName());
     }
 
     private static void createSegmentationResultAndMaskImages(Mat segmentation, Mat mask, String filename, String destination) {

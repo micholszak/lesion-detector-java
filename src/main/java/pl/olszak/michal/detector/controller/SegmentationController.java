@@ -28,7 +28,7 @@ import java.util.Optional;
 
 /**
  * @author molszak
- *         created on 28.06.2017.
+ * created on 28.06.2017.
  */
 public class SegmentationController {
 
@@ -40,24 +40,38 @@ public class SegmentationController {
 
     private static final int MAX_VALUE = 256;
 
-    public SegmentationController(ContainerOperations operations, ConvertedContainerCreator creator, DatabaseFacade databaseFacade) {
+    public SegmentationController(
+            ContainerOperations operations,
+            ConvertedContainerCreator creator,
+            DatabaseFacade databaseFacade) {
+
         this.operations = operations;
         this.creator = creator;
         this.databaseFacade = databaseFacade;
     }
 
-    public void createSegmentedImages(final ColorReduce colorReduce, final SegmentationWindowContext context) {
+    public void createSegmentedImages(
+            final ColorReduce colorReduce,
+            final SegmentationWindowContext context) {
+
         if (databaseFacade.probabilityDatabaseExists()) {
             try {
-                String folderPath = FileOperationsUtils.createDestinationFolder(colorReduce, context.getSegmentationDestinationFolder());
-                createSegmenattionResults(folderPath, context.getSegmentationResourcesFolder(), colorReduce);
+                String folderPath = FileOperationsUtils.createDestinationFolder(
+                        colorReduce,
+                        context.getSegmentationDestinationFolder());
+
+                createSegmentationResults(folderPath, context.getSegmentationResourcesFolder(), colorReduce);
             } catch (FolderCreationException e) {
                 logger.error(e.getMessage());
             }
         }
     }
 
-    private void createSegmenattionResults(String destinationPath, String resourcesPath, ColorReduce colorReduce) {
+    private void createSegmentationResults(
+            String destinationPath,
+            String resourcesPath,
+            ColorReduce colorReduce) {
+
         ImageContainer segmentationSources = operations.create(resourcesPath, ImageType.COLORED);
         ConvertedContainer sources = creator.createColoredContainer(segmentationSources.getImages());
         final Map<Color, Double> cacheMap = new HashMap<>();
@@ -66,7 +80,13 @@ public class SegmentationController {
                 .forEach(entry -> processImage(entry.getKey(), entry.getValue(), destinationPath, colorReduce, cacheMap));
     }
 
-    private void processImage(String filename, ConvertedFile convertedFile, String destinationPath, ColorReduce colorReduce, Map<Color, Double> cacheMap) {
+    private void processImage(
+            String filename,
+            ConvertedFile convertedFile,
+            String destinationPath,
+            ColorReduce colorReduce,
+            Map<Color, Double> cacheMap) {
+
         logger.info(String.format("Segmentation started on: %s, with colorReduce %d", filename, colorReduce.getValue()));
         Mat colored = convertedFile.getConverted();
         byte segmentedBytes[] = new byte[(int) (colored.size().height * colored.size().width * CvType.CV_8S)];
@@ -97,7 +117,11 @@ public class SegmentationController {
         colored.release();
     }
 
-    private void cacheMap(Map<Color, Double> cacheMap, Color color, ColorReduce colorReduce) {
+    private void cacheMap(
+            Map<Color, Double> cacheMap,
+            Color color,
+            ColorReduce colorReduce) {
+
         if (!cacheMap.containsKey(color)) {
             Optional<ColorProbability> optional = databaseFacade.retrieve(color, colorReduce);
             if (optional.isPresent()) {

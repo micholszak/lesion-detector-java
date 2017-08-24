@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import pl.olszak.michal.detector.model.data.Color;
 import pl.olszak.michal.detector.model.data.ColorProbability;
 import pl.olszak.michal.detector.model.data.RocDataSet;
+import pl.olszak.michal.detector.model.data.RocModel;
 import pl.olszak.michal.detector.utils.ColorReduce;
 
 import java.util.ArrayList;
@@ -30,12 +31,12 @@ public class DatabaseFacade {
         return new Criteria("color").is(color).and("colorMode").is(reduce.getValue());
     }
 
-    private static Criteria createCriteriaRocData(ColorReduce reduce) {
+    private static Criteria createCriteriaRocModel(ColorReduce reduce) {
         return new Criteria("colorMode").is(reduce.getValue());
     }
 
-    private static Criteria createCriteriaRocData(String name) {
-        return new Criteria("name").is(name);
+    private static Criteria createCriteriaRocModel(String name, ColorReduce colorMode) {
+        return new Criteria("name").is(name).and("colorMode").is(colorMode);
     }
 
     public boolean probabilityExists(Color color, ColorReduce reduce) {
@@ -43,9 +44,9 @@ public class DatabaseFacade {
         return mongo.exists(new Query(criteria), ColorProbability.class);
     }
 
-    public boolean rocExists(String name) {
-        final Criteria criteria = createCriteriaRocData(name);
-        return mongo.exists(new Query(criteria), RocDataSet.class);
+    public boolean rocExists(String name, ColorReduce colorMode) {
+        final Criteria criteria = createCriteriaRocModel(name, colorMode);
+        return mongo.exists(new Query(criteria), RocModel.class);
     }
 
     public Optional<ColorProbability> retrieve(Color color, ColorReduce reduce) {
@@ -67,10 +68,10 @@ public class DatabaseFacade {
     /**
      * Inserts data set to collection named "roc", does care about uniqueness of name field
      *
-     * @param dataSet data set to be inserted into collection
+     * @param model model to be inserted into collection
      */
-    public void insert(RocDataSet dataSet) {
-        mongo.insert(dataSet);
+    public void insert(RocModel model){
+        mongo.insert(model);
     }
 
     public Optional<RocDataSet> retrieveSingle(String name) {
@@ -86,14 +87,14 @@ public class DatabaseFacade {
 
     public List<RocDataSet> retrieveByColorReduction(ColorReduce reduce) {
         List<RocDataSet> dataSets = new ArrayList<>();
-        final Criteria criteria = createCriteriaRocData(reduce);
+        final Criteria criteria = createCriteriaRocModel(reduce);
         dataSets.addAll(mongo.find(new Query(criteria), RocDataSet.class));
         return dataSets;
     }
 
-    public boolean removeRoc(String name) {
-        if (rocExists(name)) {
-            WriteResult result = mongo.remove(new Query(createCriteriaRocData(name)), RocDataSet.class);
+    public boolean removeRoc(String name, ColorReduce colorMode) {
+        if (rocExists(name, colorMode)) {
+            WriteResult result = mongo.remove(new Query(createCriteriaRocModel(name, colorMode)), RocDataSet.class);
             if (result.getN() == 1) {
                 return true;
             }

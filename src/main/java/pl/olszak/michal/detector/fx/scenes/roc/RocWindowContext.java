@@ -74,6 +74,10 @@ public class RocWindowContext {
         this.imageTresholds = imageTresholds;
     }
 
+    public String getImageTresholds() {
+        return imageTresholds;
+    }
+
     public Set<Integer> getTresholds() {
         Set<Integer> set = new HashSet<>();
         String[] array = StringUtils.delimitedListToStringArray(imageTresholds, COMA, " ");

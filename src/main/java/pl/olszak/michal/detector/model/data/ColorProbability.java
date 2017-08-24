@@ -24,7 +24,13 @@ public class ColorProbability {
 
     private final int sampleSize;
 
-    public ColorProbability(Color color, int colorMode, double lesionProbability, double nonLesionProbability, int sampleSize) {
+    public ColorProbability(
+            Color color,
+            int colorMode,
+            double lesionProbability,
+            double nonLesionProbability,
+            int sampleSize) {
+
         this.color = color;
         this.colorMode = colorMode;
         this.lesionProbability = lesionProbability;

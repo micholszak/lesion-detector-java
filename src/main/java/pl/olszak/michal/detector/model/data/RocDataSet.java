@@ -8,7 +8,7 @@ import java.util.Set;
 
 /**
  * @author molszak
- *         created on 12.07.2017.
+ * created on 12.07.2017.
  */
 @Document(collection = "roc")
 public class RocDataSet {
@@ -20,7 +20,11 @@ public class RocDataSet {
 
     private final Set<RocModel> rocCollection;
 
-    public RocDataSet(String name, ColorReduce colorMode, Set<RocModel> rocCollection) {
+    public RocDataSet(
+            String name,
+            ColorReduce colorMode,
+            Set<RocModel> rocCollection) {
+
         this.name = name;
         this.colorMode = colorMode;
         this.rocCollection = rocCollection;
@@ -47,6 +51,7 @@ public class RocDataSet {
 
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (colorMode != that.colorMode) return false;
+
         return rocCollection != null ? rocCollection.equals(that.rocCollection) : that.rocCollection == null;
     }
 

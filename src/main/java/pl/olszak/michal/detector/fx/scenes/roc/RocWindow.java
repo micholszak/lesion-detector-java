@@ -88,6 +88,7 @@ public class RocWindow extends Presentation {
         maskResourcesFolderText.setText(rocWindowContext.getMaskResourcesFolder());
         rocFilesDestinationText.setText(rocWindowContext.getRocFilesDestinationText());
         databaseCollectionNameText.setText(rocWindowContext.getDatabaseCollectionName());
+        thresholdsImage.setText(rocWindowContext.getImageTresholds());
 
         databaseCollectionNameText.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!Objects.equals(newValue, oldValue)) {
