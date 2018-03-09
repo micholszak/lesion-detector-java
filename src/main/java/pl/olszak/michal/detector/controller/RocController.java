@@ -1,7 +1,10 @@
 package pl.olszak.michal.detector.controller;
 
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import javafx.util.Pair;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -61,12 +64,14 @@ public class RocController {
         ImageContainer segmentationFilesContainer = operations.create(context.getSegmentationFilesFolder(), ImageType.GRAYSCALE_SEGMENTED);
         ImageContainer maskFiles = operations.create(context.getMaskResourcesFolder(), ImageType.GRAYSCALE_MASK);
 
-        ConvertedContainer maskConverted = creator.createThresholds(maskFiles.getImages(), 128, true);
-
-        ConvertedContainer segmentedConverted = creator.createThresholds(segmentationFilesContainer.getImages(), 1, false);
-
-        processContainer(context, maskConverted, segmentedConverted);
-        logger.info("Roc process finished");
+        Single.zip(creator.createThresholds(maskFiles.getImages(), 128, true),
+                creator.createThresholds(segmentationFilesContainer.getImages(), 1, false),
+                Pair::new)
+                .subscribeOn(Schedulers.io())
+                .subscribe(pair -> {
+                    processContainer(context, pair.getKey(), pair.getValue());
+                    logger.info("Roc process finished");
+                });
     }
 
     private Disposable processContainer(RocWindowContext context, final ConvertedContainer maskConverted, final ConvertedContainer segmentedConverted) {

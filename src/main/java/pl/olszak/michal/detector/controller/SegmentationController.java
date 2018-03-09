@@ -1,6 +1,7 @@
 package pl.olszak.michal.detector.controller;
 
 import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -13,7 +14,6 @@ import pl.olszak.michal.detector.fx.scenes.segmentation.SegmentationWindowContex
 import pl.olszak.michal.detector.model.data.Color;
 import pl.olszak.michal.detector.model.data.ColorProbability;
 import pl.olszak.michal.detector.model.file.ImageType;
-import pl.olszak.michal.detector.model.file.container.coverted.ConvertedContainer;
 import pl.olszak.michal.detector.model.file.container.coverted.ConvertedFile;
 import pl.olszak.michal.detector.model.file.container.image.ImageContainer;
 import pl.olszak.michal.detector.utils.ColorReduce;
@@ -73,11 +73,14 @@ public class SegmentationController {
             ColorReduce colorReduce) {
 
         ImageContainer segmentationSources = operations.create(resourcesPath, ImageType.COLORED);
-        ConvertedContainer sources = creator.createColoredContainer(segmentationSources.getImages());
-        final Map<Color, Double> cacheMap = new HashMap<>();
+        creator.createColoredContainer(segmentationSources.getImages())
+                .subscribeOn(Schedulers.io())
+                .subscribe(container -> {
+                    final Map<Color, Double> cacheMap = new HashMap<>();
 
-        Flowable.fromIterable(sources.getConvertedFiles().entrySet())
-                .forEach(entry -> processImage(entry.getKey(), entry.getValue(), destinationPath, colorReduce, cacheMap));
+                    Flowable.fromIterable(container.getConvertedFiles().entrySet())
+                            .forEach(entry -> processImage(entry.getKey(), entry.getValue(), destinationPath, colorReduce, cacheMap));
+                });
     }
 
     private void processImage(

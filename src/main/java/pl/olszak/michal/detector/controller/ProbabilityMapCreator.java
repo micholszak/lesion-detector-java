@@ -1,7 +1,10 @@
 package pl.olszak.michal.detector.controller;
 
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.schedulers.Schedulers;
+import javafx.util.Pair;
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author molszak
- *         created on 27.03.2017.
+ * created on 27.03.2017.
  */
 public class ProbabilityMapCreator implements MapCreator {
 
@@ -54,17 +57,20 @@ public class ProbabilityMapCreator implements MapCreator {
         ImageContainer colored = containerOperations.create(context.getImageResourcesFolder(), ImageType.COLORED);
         ImageContainer mask = containerOperations.create(context.getMaskFolder(), ImageType.GRAYSCALE_MASK);
 
-        ConvertedContainer coloredConverted = creator.createColoredContainer(colored.getImages());
-        ConvertedContainer maskConverted = creator.createThresholds(mask.getImages(), 128, true);
+        Single.zip(creator.createColoredContainer(colored.getImages()),
+                creator.createThresholds(mask.getImages(), 128, true),
+                Pair::new)
+                .subscribeOn(Schedulers.io())
+                .subscribe(pair -> {
+                    Flowable.fromIterable(pair.getValue().getConvertedFiles().entrySet())
+                            .filter(entry -> pair.getKey().getConvertedFiles().containsKey(entry.getKey()))
+                            .forEach(entry -> {
+                                sampleSize.incrementAndGet();
+                                addSample(context.getColorReduce(), table, pair.getKey(), entry);
+                            });
 
-        Flowable.fromIterable(maskConverted.getConvertedFiles().entrySet())
-                .filter(entry -> coloredConverted.getConvertedFiles().containsKey(entry.getKey()))
-                .forEach(entry -> {
-                    sampleSize.incrementAndGet();
-                    addSample(context.getColorReduce(), table, coloredConverted, entry);
+                    createDatabase(table, context.getColorReduce());
                 });
-
-        createDatabase(table, context.getColorReduce());
     }
 
     private void addSample(ColorReduce colorReduce, BayessianTable table, ConvertedContainer coloredConverted, Map.Entry<String, ConvertedFile> entry) {
