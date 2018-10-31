@@ -1,12 +1,12 @@
 package pl.olszak.michal.detector.fx.scenes.database;
 
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXTextField;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -25,7 +25,7 @@ import java.util.Optional;
 
 /**
  * @author molszak
- *         created on 21.04.2017.
+ * created on 21.04.2017.
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -34,11 +34,11 @@ public class DatabaseWindow extends Presentation {
     private final Logger logger = LoggerFactory.getLogger(DatabaseWindow.class);
 
     @FXML
-    private JFXTextField maskResourcesText;
+    private TextField maskResourcesText;
     @FXML
-    private JFXTextField imageResourcesText;
+    private TextField imageResourcesText;
     @FXML
-    private JFXComboBox<ColorReduce> imageReductionCombo;
+    private ComboBox<ColorReduce> imageReductionCombo;
 
     private final MapCreator probabilityMapCreator;
     private final DatabaseWindowContext model;
@@ -91,9 +91,6 @@ public class DatabaseWindow extends Presentation {
         }
     }
 
-    /**
-     * Niestety nie jest to idiotoodporne, ale nie chce mi się robić dodatkowego ładowania
-     */
     @FXML
     public void onProcessTraining() {
         if (StringUtils.isEmpty(model.getImageResourcesFolder()) ||

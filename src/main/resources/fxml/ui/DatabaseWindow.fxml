@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXComboBox?>
-<?import com.jfoenix.controls.JFXTextField?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <StackPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.olszak.michal.detector.fx.scenes.database.DatabaseWindow">
     <children>
         <VBox fillWidth="false" StackPane.alignment="TOP_LEFT">
             <children>
                 <HBox nodeOrientation="LEFT_TO_RIGHT" spacing="15.0" VBox.vgrow="NEVER">
                     <children>
-                        <JFXTextField fx:id="maskResourcesText" editable="false" labelFloat="true" promptText="Mask resources folder">
-                        </JFXTextField>
-                        <JFXButton buttonType="RAISED" onAction="#onOpenMaskFolder" prefHeight="40" prefWidth="100" styleClass="jfx-button-raised" text="OPEN" />
+                        <TextField fx:id="maskResourcesText" editable="false" promptText="Mask resources folder">
+                        </TextField>
+                        <Button onAction="#onOpenMaskFolder" prefHeight="40" prefWidth="100" styleClass="jfx-button-raised" text="OPEN" />
                     </children>
                     <VBox.margin>
                         <Insets bottom="5.0" top="5.0" />
@@ -25,18 +19,18 @@
                 </HBox>
                 <HBox spacing="15.0" VBox.vgrow="NEVER">
                     <children>
-                        <JFXTextField fx:id="imageResourcesText" editable="false" labelFloat="true" promptText="Train resources folder" />
-                        <JFXButton buttonType="RAISED" onAction="#onOpenTrainResourcesFolder" prefHeight="40" prefWidth="100" styleClass="jfx-button-raised" text="OPEN" />
+                        <TextField fx:id="imageResourcesText" editable="false" promptText="Train resources folder" />
+                        <Button onAction="#onOpenTrainResourcesFolder" prefHeight="40" prefWidth="100" styleClass="jfx-button-raised" text="OPEN" />
                     </children>
                     <VBox.margin>
                         <Insets bottom="5.0" top="5.0" />
                     </VBox.margin>
                 </HBox>
-                <JFXComboBox fx:id="imageReductionCombo" prefWidth="200.0" promptText="Color reduction" labelFloat="true">
+                <ComboBox fx:id="imageReductionCombo" prefWidth="200.0" promptText="Color reduction">
                     <VBox.margin>
                         <Insets bottom="5.0" top="5.0" />
                     </VBox.margin>
-                </JFXComboBox>
+                </ComboBox>
             </children>
             <StackPane.margin>
                 <Insets bottom="200.0" left="32.0" top="16.0" />
@@ -44,7 +38,7 @@
         </VBox>
         <VBox prefHeight="200.0" spacing="15" StackPane.alignment="BOTTOM_CENTER">
             <children>
-                <JFXButton buttonType="RAISED" onAction="#onProcessTraining" prefHeight="40.0" prefWidth="200.0" styleClass="jfx-button-raised" text="PROCESS" />
+                <Button onAction="#onProcessTraining" prefHeight="40.0" prefWidth="200.0" styleClass="jfx-button-raised" text="PROCESS" />
             </children>
             <StackPane.margin>
                 <Insets bottom="34.0" left="32.0" top="326.0" />

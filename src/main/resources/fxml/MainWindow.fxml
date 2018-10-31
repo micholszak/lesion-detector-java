@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.TabPane?>
 <StackPane prefHeight="400.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.olszak.michal.detector.fx.MainWindow">
     <children>
-        <JFXTabPane fx:id="tabPane" tabMaxHeight="48.0" tabMinHeight="48.0" StackPane.alignment="TOP_LEFT">
+        <TabPane fx:id="tabPane" tabMaxHeight="48.0" tabMinHeight="48.0" StackPane.alignment="TOP_LEFT">
             <tabs>
                 <Tab fx:id="databaseTab" text="Create Database">
                     <content>
@@ -28,7 +28,7 @@
             <StackPane.margin>
                 <Insets bottom="120.0" />
             </StackPane.margin>
-        </JFXTabPane>
+        </TabPane>
         <TextArea fx:id="loggerOutput" editable="false" maxHeight="120.0" nodeOrientation="LEFT_TO_RIGHT" promptText="Console Output" StackPane.alignment="BOTTOM_LEFT">
             <StackPane.margin>
                 <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />

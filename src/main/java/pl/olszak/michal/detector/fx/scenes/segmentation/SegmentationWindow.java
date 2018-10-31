@@ -1,9 +1,9 @@
 package pl.olszak.michal.detector.fx.scenes.segmentation;
 
-import com.jfoenix.controls.JFXTextField;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import javafx.fxml.FXML;
+import javafx.scene.control.TextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -30,9 +30,9 @@ public class SegmentationWindow extends Presentation {
     private final Logger logger = LoggerFactory.getLogger(SegmentationWindow.class);
 
     @FXML
-    private JFXTextField segmentationResourcesText;
+    private TextField segmentationResourcesText;
     @FXML
-    private JFXTextField segmentationDestinationText;
+    private TextField segmentationDestinationText;
 
     private final SegmentationWindowContext context;
     private final SegmentationController segmentationController;

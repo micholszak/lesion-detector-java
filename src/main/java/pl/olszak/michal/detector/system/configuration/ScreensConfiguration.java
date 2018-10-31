@@ -1,7 +1,5 @@
 package pl.olszak.michal.detector.system.configuration;
 
-import com.jfoenix.controls.JFXDecorator;
-import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
@@ -50,15 +48,9 @@ public class ScreensConfiguration {
         appender = (TextAreaAppender) rootLogger.getAppender("TEXTAREA");
 
         root = new StackPane();
-        root.getStyleClass().add("main-window");
         stage.setTitle("Leasion-Detector");
 
-        JFXDecorator decorator = new JFXDecorator(stage, root);
-        decorator.setCustomMaximize(true);
-
-        Scene scene = new Scene(decorator, WIDTH, HEIGHT);
-        final ObservableList<String> stylesheets = scene.getStylesheets();
-        stylesheets.add(getClass().getResource(STYLESHEET).toExternalForm());
+        Scene scene = new Scene(root, WIDTH, HEIGHT);
 
         stage.setScene(scene);
         stage.setMinHeight(HEIGHT);
@@ -74,10 +66,6 @@ public class ScreensConfiguration {
 
     public void loadDatabaseWindow(Pane pane) {
         pane.getChildren().setAll(viewService.getNode("/fxml/ui/DatabaseWindow.fxml"));
-    }
-
-    public void loadEmptyWindow(Pane pane) {
-        pane.getChildren().setAll(viewService.getNode("/fxml/ui/EmptyTestWindow.fxml"));
     }
 
     public void loadRocWindow(Pane pane) {

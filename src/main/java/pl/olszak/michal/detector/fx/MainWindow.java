@@ -1,9 +1,8 @@
 package pl.olszak.michal.detector.fx;
 
-import com.jfoenix.controls.JFXTabPane;
-import com.jfoenix.controls.JFXTextArea;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 import org.slf4j.Logger;
@@ -24,7 +23,7 @@ public class MainWindow extends Presentation {
     private static final Logger logger = LoggerFactory.getLogger(MainWindow.class);
 
     @FXML
-    private JFXTabPane tabPane;
+    private TabPane tabPane;
 
     @FXML
     private Tab databaseTab;

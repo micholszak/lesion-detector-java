@@ -1,25 +1,24 @@
 package pl.olszak.michal.detector.fx.scenes.roc;
 
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.validation.ValidationFacade;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import pl.olszak.michal.detector.controller.RocController;
 import pl.olszak.michal.detector.fx.Presentation;
 import pl.olszak.michal.detector.system.configuration.ScreensConfiguration;
 import pl.olszak.michal.detector.utils.CallbackProvider;
 import pl.olszak.michal.detector.utils.ColorReduce;
 import pl.olszak.michal.detector.utils.DialogUtils;
+import pl.olszak.michal.detector.utils.Strings;
 
 import java.io.File;
 import java.util.Objects;
@@ -30,8 +29,6 @@ import java.util.Optional;
  *         created on 11.07.2017.
  */
 
-
-// TODO: 11.07.2017 stworzyć kontroler dla Roc, wydaje mi się, że rysowanie wykresów może być na osobnym oknie z bazy danych wyciągane
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class RocWindow extends Presentation {
@@ -39,17 +36,17 @@ public class RocWindow extends Presentation {
     private final Logger logger = LoggerFactory.getLogger(RocWindow.class);
 
     @FXML
-    private JFXComboBox<ColorReduce> colorReductionCombo;
+    private ComboBox<ColorReduce> colorReductionCombo;
     @FXML
-    private JFXTextField segmentationFilesFolderText;
+    private TextField segmentationFilesFolderText;
     @FXML
-    private JFXTextField maskResourcesFolderText;
+    private TextField maskResourcesFolderText;
     @FXML
-    private JFXTextField rocFilesDestinationText;
+    private TextField rocFilesDestinationText;
     @FXML
-    private JFXTextField databaseCollectionNameText;
+    private TextField databaseCollectionNameText;
     @FXML
-    private JFXTextField thresholdsImage;
+    private TextField thresholdsImage;
 
     private final CallbackProvider callbackProvider;
     private final RocWindowContext rocWindowContext;
@@ -64,16 +61,6 @@ public class RocWindow extends Presentation {
 
     @FXML
     public void initialize() {
-        databaseCollectionNameText.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                ValidationFacade.validate(databaseCollectionNameText);
-            }
-        });
-        thresholdsImage.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                ValidationFacade.validate(thresholdsImage);
-            }
-        });
         ObservableList<ColorReduce> reduction = FXCollections.observableArrayList(ColorReduce.values());
         colorReductionCombo.setItems(reduction);
         colorReductionCombo.setValue(rocWindowContext.getColorReduce());
@@ -137,19 +124,23 @@ public class RocWindow extends Presentation {
 
     @FXML
     public void startRoc() {
-        if (!ValidationFacade.validate(databaseCollectionNameText) ||
-                !ValidationFacade.validate(thresholdsImage) ||
-                StringUtils.isEmpty(rocWindowContext.getMaskResourcesFolder()) ||
-                StringUtils.isEmpty(rocWindowContext.getRocFilesDestinationText()) ||
-                StringUtils.isEmpty(rocWindowContext.getSegmentationFilesFolder())) {
+        if (canProcessDatabase()) {
+            logger.info("Starting roc");
+            Observable.just(rocWindowContext)
+                    .subscribeOn(Schedulers.computation())
+                    .subscribe(rocController::createRocDatabase);
             logger.error("Could not process roc creation, some of the fields are empty");
-            return;
-        }
-
-        logger.info("Starting roc");
-        Observable.just(rocWindowContext)
-                .subscribeOn(Schedulers.computation())
-                .subscribe(rocController::createRocDatabase);
+        }else logger.error("Could not process roc creation, some of the fields are empty");
     }
 
+    private boolean canProcessDatabase(){
+        String collectionName = databaseCollectionNameText.getText();
+        String thresholdsImageOption = thresholdsImage.getText();
+
+        return Strings.areNotEmpty(collectionName,
+                thresholdsImageOption,
+                rocWindowContext.getMaskResourcesFolder(),
+                rocWindowContext.getRocFilesDestinationText(),
+                rocWindowContext.getSegmentationFilesFolder());
+    }
 }

@@ -38,7 +38,6 @@ public class ColorProbability {
         this.sampleSize = sampleSize;
     }
 
-
     public Color getColor() {
         return color;
     }
